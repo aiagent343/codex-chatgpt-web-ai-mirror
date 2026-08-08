@@ -680,3 +680,5 @@ export function createChatGptWebAdapter(provider: CodexProviderConfig): Provider
     },
   };
 }
+
+// GitHub Desktop manual-change detection test: 2026-08-09 01:23:28
