@@ -1,0 +1,30 @@
+# Public AI Mirror - fail closed
+
+# Never publish private/runtime material
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.pem
+*.pfx
+*.p12
+*.key
+auth.json
+credentials.json
+secrets.json
+.env
+.env.*
+*.log
+*.zip
+
+browser-profile/
+user-data-dir/
+native-relay-diagnostic/
+diagnostics/raw/
+diagnostics/browser-turns/
+
+# Local tooling
+.vscode/
+.idea/
+node_modules/

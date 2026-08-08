@@ -1,0 +1,88 @@
+{
+    "source_branch":  "live",
+    "source_commit":  "a3f9b560a9a3d5c52e94cc56cff215ae86d6de31",
+    "generated_at":  "2026-08-09 00:28:07 +08:00",
+    "file_count":  16,
+    "files":  [
+                  {
+                      "path":  ".gitignore",
+                      "sha256":  "1DAA865185DC6391980B6EBD6DB6A2BA97C3C4D48B8F20AF6C0A4EE5E371CBC8",
+                      "bytes":  353
+                  },
+                  {
+                      "path":  "CURRENT_ISSUES.md",
+                      "sha256":  "F66D99899AAF4C4F9E3F915C73471E9F106FBC393A0AF0F538DFAB8479EB78D9",
+                      "bytes":  763
+                  },
+                  {
+                      "path":  "GIT_SECURITY_POLICY.md",
+                      "sha256":  "E67C17D230E9D7F1E6D779339D782D25358C0F1E54543C319A9BA61675647126",
+                      "bytes":  551
+                  },
+                  {
+                      "path":  "PRIVATE_SOURCE_COMMIT.txt",
+                      "sha256":  "679DCE201EFAFF8DAB56FEB15390ACA1D52C4F5A91A938F34E24FE9C679580B7",
+                      "bytes":  169
+                  },
+                  {
+                      "path":  "PROVIDER_V7_IMPLEMENTATION_TASK.md",
+                      "sha256":  "8FAF7166A517A0843E85C2800D04D22EAB6C128C67DAD2870BBF8731346C31E9",
+                      "bytes":  8671
+                  },
+                  {
+                      "path":  "README.md",
+                      "sha256":  "E915D19EE83D1A7D05B5415583E01B7508B5C40BAE6F84BFB98A849529B36AD2",
+                      "bytes":  963
+                  },
+                  {
+                      "path":  "selected-source/launcher/electron/browser-host.cjs",
+                      "sha256":  "05A9A5248E2B3650E7C1E26AA104F8EAEA833CECD0B54B0B89619E59784EA123",
+                      "bytes":  64554
+                  },
+                  {
+                      "path":  "selected-source/launcher/electron/codex-sandbox-repair.cjs",
+                      "sha256":  "EC8BE0F4EE48512F3A232DEF3EECF4938FFE5E1671DE90D4718F6923174258F2",
+                      "bytes":  10228
+                  },
+                  {
+                      "path":  "selected-source/src/adapters/chatgpt-web/browser-worker.ts",
+                      "sha256":  "841C8FD85B4E53A20BB949CFE56A41C55DC9D06509E721E768A516F38DAFB9C7",
+                      "bytes":  76704
+                  },
+                  {
+                      "path":  "selected-source/src/adapters/chatgpt-web/index.ts",
+                      "sha256":  "D8EF0BD9AF23C10C45E57A18912FB5CA1E3369B327F19AB4CC276CF39EC53764",
+                      "bytes":  26707
+                  },
+                  {
+                      "path":  "selected-source/src/adapters/chatgpt-web/native-tool-decision.ts",
+                      "sha256":  "F7E8734714E819EE386B88585305819D97E70F982A17AEB62FC509869FBB8195",
+                      "bytes":  15612
+                  },
+                  {
+                      "path":  "selected-source/src/adapters/chatgpt-web/prompt.ts",
+                      "sha256":  "4174D201B18B74134689CF343459363E2161B6E606AA0E913FF949972AF68548",
+                      "bytes":  18134
+                  },
+                  {
+                      "path":  "selected-source/src/chatgpt-session.ts",
+                      "sha256":  "D2F76AB16FAA5369290ED7F399282B81B10CFF919EE78FA23B49D1BD728E76F9",
+                      "bytes":  5226
+                  },
+                  {
+                      "path":  "selected-source/src/codex-integration.ts",
+                      "sha256":  "FAEDA787F039CE5F5C8A4EA30ABDB1836791049D5B351BD676DBA80C211689BC",
+                      "bytes":  50444
+                  },
+                  {
+                      "path":  "SOURCE_PROVENANCE.md",
+                      "sha256":  "4204EE8DB55CFA83FDC3AF5E2D19CA53B97918F8D390086E3A2A6664D168ABD5",
+                      "bytes":  848
+                  },
+                  {
+                      "path":  "STATUS.md",
+                      "sha256":  "95F4D17B35531E69F6BC89D65C76C88D0381B5A28144AA50C4C031FA063E829F",
+                      "bytes":  1536
+                  }
+              ]
+}
