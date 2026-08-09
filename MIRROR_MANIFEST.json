@@ -1,88 +1,955 @@
 {
+    "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
     "source_commit":  "3949bb982b523fea43ee9033df179a818c336fbe",
-    "generated_at":  "2026-08-09 01:39:11 +08:00",
-    "file_count":  16,
+    "generated_at":  "2026-08-09T08:34:08+08:00",
+    "tracked_file_count":  187,
+    "included_source_file_count":  184,
+    "excluded_source_file_count":  3,
     "files":  [
                   {
-                      "path":  ".gitignore",
-                      "sha256":  "7DED5ABCF308E29BF7862292DB27892F8F3EBBC3C556D6F20258F2BC72B4165E",
-                      "bytes":  260
-                  },
-                  {
-                      "path":  "CURRENT_ISSUES.md",
-                      "sha256":  "F66D99899AAF4C4F9E3F915C73471E9F106FBC393A0AF0F538DFAB8479EB78D9",
-                      "bytes":  763
-                  },
-                  {
-                      "path":  "GIT_SECURITY_POLICY.md",
-                      "sha256":  "E67C17D230E9D7F1E6D779339D782D25358C0F1E54543C319A9BA61675647126",
-                      "bytes":  551
-                  },
-                  {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
-                      "sha256":  "0167D3683C8E0136F07250C92A508449F0F24C84BE2192428995B096EC1FD85B",
-                      "bytes":  169
-                  },
-                  {
-                      "path":  "PROVIDER_V7_IMPLEMENTATION_TASK.md",
-                      "sha256":  "8FAF7166A517A0843E85C2800D04D22EAB6C128C67DAD2870BBF8731346C31E9",
-                      "bytes":  8671
+                      "bytes":  195,
+                      "sha256":  "1be7e0aacd0bea4b21bf6f80f8067d38a97f0078a735755fdc8465662383b5db"
                   },
                   {
                       "path":  "README.md",
-                      "sha256":  "3D0FA92031450BFB662E949DF873C5B8B91FE096469FC722FA5237A23010B7CE",
-                      "bytes":  963
+                      "bytes":  761,
+                      "sha256":  "1b2adf509d5f1795e366f3a959a647e58b811acf4722a7e29ee2b7dbda7bc8f4"
                   },
                   {
-                      "path":  "selected-source/launcher/electron/browser-host.cjs",
-                      "sha256":  "05A9A5248E2B3650E7C1E26AA104F8EAEA833CECD0B54B0B89619E59784EA123",
-                      "bytes":  64554
+                      "path":  "source/.gitignore",
+                      "bytes":  2188,
+                      "sha256":  "3916610a2a20263e3a1ca23d1a2227b180aca3eb297571491ac362fbd9d9ede8"
                   },
                   {
-                      "path":  "selected-source/launcher/electron/codex-sandbox-repair.cjs",
-                      "sha256":  "EC8BE0F4EE48512F3A232DEF3EECF4938FFE5E1671DE90D4718F6923174258F2",
-                      "bytes":  10228
+                      "path":  "source/bun.lock",
+                      "bytes":  22215,
+                      "sha256":  "c41f60e2df6d937988c4bdfdc0495f5d1a40a5b07402c99106a837906666ffa6"
                   },
                   {
-                      "path":  "selected-source/src/adapters/chatgpt-web/browser-worker.ts",
-                      "sha256":  "841C8FD85B4E53A20BB949CFE56A41C55DC9D06509E721E768A516F38DAFB9C7",
-                      "bytes":  76704
+                      "path":  "source/CONTRIBUTING.md",
+                      "bytes":  1582,
+                      "sha256":  "f510475038f331e330b3ccc3074ae2841befc3b67b992e39b46b0eaed044dcb4"
                   },
                   {
-                      "path":  "selected-source/src/adapters/chatgpt-web/index.ts",
-                      "sha256":  "CF6C1D9812132146B669B4D1E7560EB3FA9D04444399ED85F655177B01F6C502",
-                      "bytes":  26778
+                      "path":  "source/CURRENT_ISSUES.md",
+                      "bytes":  763,
+                      "sha256":  "f66d99899aaf4c4f9e3f915c73471e9f106fbc393a0af0f538dfab8479eb78d9"
                   },
                   {
-                      "path":  "selected-source/src/adapters/chatgpt-web/native-tool-decision.ts",
-                      "sha256":  "F7E8734714E819EE386B88585305819D97E70F982A17AEB62FC509869FBB8195",
-                      "bytes":  15612
+                      "path":  "source/GIT_SECURITY_POLICY.md",
+                      "bytes":  551,
+                      "sha256":  "e67c17d230e9d7f1e6d779339d782d25358c0f1e54543c319a9ba61675647126"
                   },
                   {
-                      "path":  "selected-source/src/adapters/chatgpt-web/prompt.ts",
-                      "sha256":  "4174D201B18B74134689CF343459363E2161B6E606AA0E913FF949972AF68548",
-                      "bytes":  18134
+                      "path":  "source/LAUNCHER_PRODUCTIZATION_CODE_CONTEXT.txt",
+                      "bytes":  152436,
+                      "sha256":  "0352b2b71439c38730f856667a3c1544401c6a26f3e6f673cf0dec82c7f5e559"
                   },
                   {
-                      "path":  "selected-source/src/chatgpt-session.ts",
-                      "sha256":  "D2F76AB16FAA5369290ED7F399282B81B10CFF919EE78FA23B49D1BD728E76F9",
-                      "bytes":  5226
+                      "path":  "source/LAUNCHER_PRODUCTIZATION_INVENTORY.txt",
+                      "bytes":  41309,
+                      "sha256":  "e0ed2658b0404256f46aeccb5c2962674355f032bf0de30d8a76f2aae0502a07"
                   },
                   {
-                      "path":  "selected-source/src/codex-integration.ts",
-                      "sha256":  "FAEDA787F039CE5F5C8A4EA30ABDB1836791049D5B351BD676DBA80C211689BC",
-                      "bytes":  50444
+                      "path":  "source/LICENSE",
+                      "bytes":  1087,
+                      "sha256":  "d8b06e8d802722749b8f09e4ed1f2439fde0995a09b7e47c65dca3cc54d43d6e"
                   },
                   {
-                      "path":  "SOURCE_PROVENANCE.md",
-                      "sha256":  "4204EE8DB55CFA83FDC3AF5E2D19CA53B97918F8D390086E3A2A6664D168ABD5",
-                      "bytes":  848
+                      "path":  "source/NATIVE_TOOL_DECISION_CURRENT_SOURCE.txt",
+                      "bytes":  13312,
+                      "sha256":  "9d0b835fc4b99e128f1d9c6558598ad2c3d0da52252b937309b1702b3b38b8c1"
                   },
                   {
-                      "path":  "STATUS.md",
-                      "sha256":  "95F4D17B35531E69F6BC89D65C76C88D0381B5A28144AA50C4C031FA063E829F",
-                      "bytes":  1536
+                      "path":  "source/package.json",
+                      "bytes":  2402,
+                      "sha256":  "abe39b204aafa3c5eca29583233c7cb10068437f45a9573c823b242d3bb15cf8"
+                  },
+                  {
+                      "path":  "source/PROVIDER_PRODUCTIZATION_FULL_SOURCE.txt",
+                      "bytes":  109535,
+                      "sha256":  "3f3452be003189f7fdccfeffc1534b32fe3b823b63d3cb82a0bc27068ab42239"
+                  },
+                  {
+                      "path":  "source/PROVIDER_V7_FIRST_RECONNECT_DIAG.txt",
+                      "bytes":  12336,
+                      "sha256":  "9fed48b25fd5f5548b138ce7a038d234b282cb1d8434e6a83045177566d55d28"
+                  },
+                  {
+                      "path":  "source/PROVIDER_V7_IMPLEMENTATION_TASK.md",
+                      "bytes":  8671,
+                      "sha256":  "8faf7166a517a0843e85c2800d04d22eab6c128c67dad2870bbf8731346c31e9"
+                  },
+                  {
+                      "path":  "source/README.md",
+                      "bytes":  9572,
+                      "sha256":  "ae6edf8f8a7d1f1a680b4a802f5089d088ce3ee42aeeabc0aa93e63fb88dc2c5"
+                  },
+                  {
+                      "path":  "source/README.zh-CN.md",
+                      "bytes":  9599,
+                      "sha256":  "d6a458a2d57fdc33a7cff99a59b6ec34c851196ce0af940b8415f221a5f5f589"
+                  },
+                  {
+                      "path":  "source/SECURITY.md",
+                      "bytes":  1349,
+                      "sha256":  "0dec44022ac0ed56e6a9bee583c57ade9258ace0290c25157b82f9d30e5190cd"
+                  },
+                  {
+                      "path":  "source/SOURCE_PROVENANCE.md",
+                      "bytes":  848,
+                      "sha256":  "4204ee8db55cfa83fdc3af5e2d19ca53b97918f8d390086e3a2a6664d168abd5"
+                  },
+                  {
+                      "path":  "source/STATUS.md",
+                      "bytes":  1536,
+                      "sha256":  "95f4d17b35531e69f6bc89d65c76c88d0381b5a28144aa50c4c031fa063e829f"
+                  },
+                  {
+                      "path":  "source/tsconfig.json",
+                      "bytes":  273,
+                      "sha256":  "a7be042199d6e05c2441c7184ab6c85152cad6d8baed625963b6390d4a34b133"
+                  },
+                  {
+                      "path":  "source/.github/actionlint.yaml",
+                      "bytes":  279,
+                      "sha256":  "b9b945e14c1c530e18579d4feb10548bbdc4ae3710d097dbb6682378b8bffd81"
+                  },
+                  {
+                      "path":  "source/.github/workflows/ci.yml",
+                      "bytes":  1648,
+                      "sha256":  "08a510bb68474b3867bfab82e3dfe831ea00b6482128e030e55338e782070c36"
+                  },
+                  {
+                      "path":  "source/.github/workflows/release.yml",
+                      "bytes":  5767,
+                      "sha256":  "8d349ae2b7483578f4ed0a4afcc86f2e2de42386c6fad67c0ca7910a33b7a695"
+                  },
+                  {
+                      "path":  "source/assets/demo.gif",
+                      "bytes":  2799465,
+                      "sha256":  "120cd8ac575f08198c36f02ed6ee9c243687a95c019e9fe0487bf8d5d4a38f57"
+                  },
+                  {
+                      "path":  "source/docs/architecture.md",
+                      "bytes":  6863,
+                      "sha256":  "adc5e2cf7f71b4be5850e96c889218b59120fc905f3f15a69bb502f2bae85222"
+                  },
+                  {
+                      "path":  "source/docs/security-model.md",
+                      "bytes":  4770,
+                      "sha256":  "6499553fb0d3ae2acf875c0244986a9fc2de962f9781ed8c8ea0ad4cad6196e2"
+                  },
+                  {
+                      "path":  "source/docs/architecture/.gitkeep",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "source/docs/implementation-reports/.gitkeep",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "source/docs/milestones/.gitkeep",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "source/launcher/bun.lock",
+                      "bytes":  92040,
+                      "sha256":  "15695e1ece764328085d73bee498751622b23fca4f03425edaca4f40e2dda31e"
+                  },
+                  {
+                      "path":  "source/launcher/index.html",
+                      "bytes":  624,
+                      "sha256":  "39f6b258b74bacaeb0a510f7c444b31faa55c52eb25140d1b8a3380f4ddf7b75"
+                  },
+                  {
+                      "path":  "source/launcher/package.json",
+                      "bytes":  2413,
+                      "sha256":  "674df8042f677c0cd3be08fb1836b7bd566ea5cb6fae5a860c95bac3029e34cd"
+                  },
+                  {
+                      "path":  "source/launcher/tsconfig.json",
+                      "bytes":  507,
+                      "sha256":  "20a936e14228ab8ea4d2899ae3004096da5d2fd8ffd1f74368d826d53b04fed0"
+                  },
+                  {
+                      "path":  "source/launcher/vite.config.ts",
+                      "bytes":  416,
+                      "sha256":  "ef56e64d250eafc59e1a8b06e5e0f640da1adabfa0f1654d63fd6e999cfdb075"
+                  },
+                  {
+                      "path":  "source/launcher/assets/icon.ico",
+                      "bytes":  270622,
+                      "sha256":  "8e4a7dc5bf546e8b281bc4be5d84617230c1ae9ab17ecf39779ba1a031b4d975"
+                  },
+                  {
+                      "path":  "source/launcher/assets/icon.png",
+                      "bytes":  414023,
+                      "sha256":  "1bf7e630e29c393283d966d12903ee6a637b6fef3d3876a393006b0598e8336c"
+                  },
+                  {
+                      "path":  "source/launcher/assets/icon.svg",
+                      "bytes":  2750,
+                      "sha256":  "e1c9b0a2eb7c8399f84b25a9f27cf4d12729374f276cce405ab711b3c9e92f0a"
+                  },
+                  {
+                      "path":  "source/launcher/electron/atomic-file.cjs",
+                      "bytes":  1491,
+                      "sha256":  "a2c00c98f3cdb1e7236d218df750c8256a6e10e56d7b14cec5fb37ca7b5af35f"
+                  },
+                  {
+                      "path":  "source/launcher/electron/autostart.cjs",
+                      "bytes":  3302,
+                      "sha256":  "1980a183efac7d8c1c2b266c85b76fea223553c0634a54159eb4be14d111629f"
+                  },
+                  {
+                      "path":  "source/launcher/electron/browser-helper-verifier.cjs",
+                      "bytes":  5940,
+                      "sha256":  "e843b7ee3e264e2d20b34a9cd9ee3c817837feaf6d1dfe3edaa7abdbda3efcc9"
+                  },
+                  {
+                      "path":  "source/launcher/electron/browser-host.cjs",
+                      "bytes":  64554,
+                      "sha256":  "05a9a5248e2b3650e7c1e26aa104f8eaea833cecd0b54b0b89619e59784ea123"
+                  },
+                  {
+                      "path":  "source/launcher/electron/browser-state.cjs",
+                      "bytes":  1665,
+                      "sha256":  "4f5d0e2586d548fe199f7883a2181ee42999c11850b5a2cea36a007f99a8f129"
+                  },
+                  {
+                      "path":  "source/launcher/electron/cdp-input.cjs",
+                      "bytes":  2685,
+                      "sha256":  "e337059a9ac4f0593dfe023e5b38e90cce5aeb9301239fcc16c88fe94cf8e706"
+                  },
+                  {
+                      "path":  "source/launcher/electron/codex-sandbox-repair.cjs",
+                      "bytes":  10228,
+                      "sha256":  "ec8be0f4ee48512f3a232def3eecf4938ffe5e1671de90d4718f6923174258f2"
+                  },
+                  {
+                      "path":  "source/launcher/electron/control-server.cjs",
+                      "bytes":  5462,
+                      "sha256":  "083ac4f1fcd8a63f989af1a98754469c56e4a0eff26ed932a10cc474a08c6d5e"
+                  },
+                  {
+                      "path":  "source/launcher/electron/logging.cjs",
+                      "bytes":  4457,
+                      "sha256":  "cbd4cfa2b3bb6cbb1511cf8d5f815e9a37a3d623ac43b304566a02327081b4de"
+                  },
+                  {
+                      "path":  "source/launcher/electron/main.cjs",
+                      "bytes":  35552,
+                      "sha256":  "7bbba5c53d3b06a0c6b6527f324d623d75e5415adb50a7c1a13261b832e8483e"
+                  },
+                  {
+                      "path":  "source/launcher/electron/preload.cjs",
+                      "bytes":  3223,
+                      "sha256":  "c1abf2fc353ded6186b9175d0cbee20825c543b2c41c906d89fa1e8bb11d3eca"
+                  },
+                  {
+                      "path":  "source/launcher/electron/process-tree.cjs",
+                      "bytes":  1907,
+                      "sha256":  "750c0e7e89aa562c8ac6b28eba5649f0f5140a7e88262551dbc62d0176372aa1"
+                  },
+                  {
+                      "path":  "source/launcher/electron/runtime-command.cjs",
+                      "bytes":  2295,
+                      "sha256":  "b08d4ccd30460471599df5873af5d9a3123bb58e725f42389b691321d73652b2"
+                  },
+                  {
+                      "path":  "source/launcher/electron/runtime-install.cjs",
+                      "bytes":  4181,
+                      "sha256":  "bdcf6fb579b023bd0de4f761be5b416ef1f7f6787ba33c12356980e67048480a"
+                  },
+                  {
+                      "path":  "source/launcher/electron/runtime-supervisor.cjs",
+                      "bytes":  63587,
+                      "sha256":  "4355eed97bde6924284d274aceb9525dbe976dab1c429fbb9f6981f3ae46f820"
+                  },
+                  {
+                      "path":  "source/launcher/electron/runtime.cjs",
+                      "bytes":  34033,
+                      "sha256":  "b12f3dcf6a23bc9c285ca1ba1a6c65d74c8594ae81465aeae304b5eda5fc58a3"
+                  },
+                  {
+                      "path":  "source/launcher/electron/state.cjs",
+                      "bytes":  3842,
+                      "sha256":  "acd1088d62d91f87dcc3857e785343c07fe0c1caa6b023e29fbf5cec4a2519a5"
+                  },
+                  {
+                      "path":  "source/launcher/electron/update-worker.cjs",
+                      "bytes":  5678,
+                      "sha256":  "9ad88eaf4bd2a2606b78448e480913cbd06ad0318d124d79f864f06d395f6a5d"
+                  },
+                  {
+                      "path":  "source/launcher/electron/update.cjs",
+                      "bytes":  12733,
+                      "sha256":  "0add8ff1247689dd5c5d14a3dbc92b49718621d3e84f6bd3938d512bbb91cd5e"
+                  },
+                  {
+                      "path":  "source/launcher/electron/window-state.cjs",
+                      "bytes":  3145,
+                      "sha256":  "8e1af9bba2e018149110a5241b504f28ccc218b149be90a14299a5b604f5c338"
+                  },
+                  {
+                      "path":  "source/launcher/scripts/dev.cjs",
+                      "bytes":  2117,
+                      "sha256":  "faf12644013a13441e0fe88e200a0ff193f864de9a69898286a0dfdd9f366b75"
+                  },
+                  {
+                      "path":  "source/launcher/scripts/package.cjs",
+                      "bytes":  2793,
+                      "sha256":  "e9fcf413e579ea172f0105735f2a328defe82f0483f29c6b15599dff49502433"
+                  },
+                  {
+                      "path":  "source/launcher/scripts/prepare-runtime.cjs",
+                      "bytes":  1122,
+                      "sha256":  "a5c9e71e4e42ba8dd6418feb498f462945ef8ff7d6d8ed203231c5ee13290e22"
+                  },
+                  {
+                      "path":  "source/launcher/scripts/smoke-package.cjs",
+                      "bytes":  4319,
+                      "sha256":  "3ec7875f4b0ec19d53db1dd500cf3e98ac4ce576b4918eb028850bfbb91a9fdf"
+                  },
+                  {
+                      "path":  "source/launcher/src/App.tsx",
+                      "bytes":  58607,
+                      "sha256":  "f919f02d40b070358c32ef3268cef8b3a2738544037566fa1d60e96f0d0ea785"
+                  },
+                  {
+                      "path":  "source/launcher/src/i18n.ts",
+                      "bytes":  12827,
+                      "sha256":  "1b7ea1969fc70f4e4bb5eab6380ad7aaad0a9a5c686210fef5078423aa69878d"
+                  },
+                  {
+                      "path":  "source/launcher/src/icons.tsx",
+                      "bytes":  4069,
+                      "sha256":  "274febc205d53e263086945fb51d732055fa8b6b7e67f27ef528920ab116751f"
+                  },
+                  {
+                      "path":  "source/launcher/src/main.tsx",
+                      "bytes":  265,
+                      "sha256":  "13a70b435b226a5356e623b0d2980a1582cb426b310e084245dbf29b1be080f5"
+                  },
+                  {
+                      "path":  "source/launcher/src/styles.css",
+                      "bytes":  38596,
+                      "sha256":  "7a3b90068fa887634d191c53b49d71696566ce2ea7d36a8a88a13ff8c9952ccf"
+                  },
+                  {
+                      "path":  "source/launcher/src/tokens.css",
+                      "bytes":  2469,
+                      "sha256":  "f06acbcd77237492419be5cf398cd6de5f14ad14a53e454f11f3dda76ff3ca00"
+                  },
+                  {
+                      "path":  "source/launcher/src/types.ts",
+                      "bytes":  5121,
+                      "sha256":  "51f6a8be5ac6d1ae2b0516b5dc20d40ded8aca4ef9602d2aab9c01bc8bc87fe7"
+                  },
+                  {
+                      "path":  "source/launcher/src/assets/mcp-connect-connector.gif",
+                      "bytes":  1187553,
+                      "sha256":  "125ed1e66b77c088dc44f52f0e728833dcbcf6396d1dac0b745a6876f52c6b30"
+                  },
+                  {
+                      "path":  "source/launcher/src/assets/mcp-create-tunnel.gif",
+                      "bytes":  2704422,
+                      "sha256":  "e9461ca6191a959f749cf0ec2eb4a646f051af08e5dd06caa6e26d888dee7390"
+                  },
+                  {
+                      "path":  "source/launcher/tests/atomic-file.test.cjs",
+                      "bytes":  1833,
+                      "sha256":  "30415b7e984537ef1b9ff90cb4dce5cfc5ff749964e3176a8507ebe8af8e92f6"
+                  },
+                  {
+                      "path":  "source/launcher/tests/browser-helper-verifier.test.cjs",
+                      "bytes":  2679,
+                      "sha256":  "186f8bfbe79f17ae5c8f989d2bf123f15d122bb4d968bee24fb0969184654c91"
+                  },
+                  {
+                      "path":  "source/launcher/tests/browser-host.test.cjs",
+                      "bytes":  41900,
+                      "sha256":  "e6eebe6dd925fe0834a9d94dc61e330019d2673535a022d2a3f4a16f11c8c15e"
+                  },
+                  {
+                      "path":  "source/launcher/tests/cdp-input.test.cjs",
+                      "bytes":  3699,
+                      "sha256":  "fcc121a12d19d62e5260c46eb46581e72ff72665343f428f9dae06df81604099"
+                  },
+                  {
+                      "path":  "source/launcher/tests/control-server.test.cjs",
+                      "bytes":  2950,
+                      "sha256":  "574b284cd7902eb7881a993c988416103e55518c793085250146e7caaa8abcb1"
+                  },
+                  {
+                      "path":  "source/launcher/tests/design-contract.test.cjs",
+                      "bytes":  12417,
+                      "sha256":  "ec5af6aca826b3a9d0232c436b624d1bdfdc0240acc2d40d0a30129af0e66d3c"
+                  },
+                  {
+                      "path":  "source/launcher/tests/logging.test.cjs",
+                      "bytes":  2657,
+                      "sha256":  "c1af92a054c82fc4cd1537b07fb2079d9a42a34fde742fe2a3a8ac5e15437132"
+                  },
+                  {
+                      "path":  "source/launcher/tests/packaging-contract.test.cjs",
+                      "bytes":  5774,
+                      "sha256":  "8969d72e50784f0a79aba13e1a23cc958101f405f7c6cfa1cc604cef6473cd86"
+                  },
+                  {
+                      "path":  "source/launcher/tests/runtime-host.test.cjs",
+                      "bytes":  23345,
+                      "sha256":  "94a085dcf647765e46c4fcf5399b33a081fd76d70a31619188a0b5b28ededa60"
+                  },
+                  {
+                      "path":  "source/launcher/tests/runtime-install.test.cjs",
+                      "bytes":  5130,
+                      "sha256":  "1ae45af95677a43ffb1ca813f5f56c4b13001f429b866cd7fece109988c10eff"
+                  },
+                  {
+                      "path":  "source/launcher/tests/runtime-supervisor.test.cjs",
+                      "bytes":  57745,
+                      "sha256":  "20e303d9ee069abf4ae933a5dad2329e06f2fdac607df98c6023ba67c7e14640"
+                  },
+                  {
+                      "path":  "source/launcher/tests/state.test.cjs",
+                      "bytes":  4025,
+                      "sha256":  "c6a8ced4e676b5ec0025f6587878e68bbc40559ddb49efa7efcf9cd332e0b1df"
+                  },
+                  {
+                      "path":  "source/launcher/tests/update.test.cjs",
+                      "bytes":  8954,
+                      "sha256":  "0be26a0a5d802b7859ab07fb7461e16bf23ec411f88984754aded842a261cc9d"
+                  },
+                  {
+                      "path":  "source/launcher/tests/window-state.test.cjs",
+                      "bytes":  1999,
+                      "sha256":  "ca25d18a859d9eb08797c875eccd2611a828fb08dc5b6b88b1de9999cdf80dde"
+                  },
+                  {
+                      "path":  "source/LICENSES/Bun-1.3.14.md",
+                      "bytes":  5377,
+                      "sha256":  "2cb858b2db8fc793bca2093489c5bc8eee615d002cc4924254904044c27a0afa"
+                  },
+                  {
+                      "path":  "source/LICENSES/NOTICE.md",
+                      "bytes":  700,
+                      "sha256":  "1eb51786fd0a0eb7326ad9e88ea6dd2bf5a31f0463a15c08674c58c39501ab2d"
+                  },
+                  {
+                      "path":  "source/LICENSES/OpenCodex-MIT.txt",
+                      "bytes":  1098,
+                      "sha256":  "62008f74074438ca029d9218e7c1f97cc37a31a3999d9202fa4ec465d85d1a91"
+                  },
+                  {
+                      "path":  "source/LICENSES/tiktoken-MIT.txt",
+                      "bytes":  1078,
+                      "sha256":  "418cb499b436128d653d79941333a5437b7be2ea9213dcc2f04d15d5d2c51d86"
+                  },
+                  {
+                      "path":  "source/scripts/build-browser-helper.ts",
+                      "bytes":  848,
+                      "sha256":  "089669c9655532d180d9b9e696d3a45dfe96001dfed8fcf70cc94f4209809eb6"
+                  },
+                  {
+                      "path":  "source/scripts/build-runtime-bundle.ts",
+                      "bytes":  4535,
+                      "sha256":  "db095511f51dd71ff3670d69c3274ba3168753e95edde7f024832ba815ed4d63"
+                  },
+                  {
+                      "path":  "source/scripts/check-version.ts",
+                      "bytes":  2346,
+                      "sha256":  "9dd0db527ed7bd4b00834b3a0ef8669ed6d36efb69c50fa785c8837b3be9ed8f"
+                  },
+                  {
+                      "path":  "source/scripts/clean.ts",
+                      "bytes":  271,
+                      "sha256":  "100066a30f25c5cf6904c3d3f1f2e0e3a81e4d40182d648533fa0170a93cb2f6"
+                  },
+                  {
+                      "path":  "source/scripts/generate-third-party-notices.ts",
+                      "bytes":  4618,
+                      "sha256":  "4930495e5d4ae7fc4ab87a3ee2768a0a307ce87241659b0a6356950fac97b0a0"
+                  },
+                  {
+                      "path":  "source/scripts/inspect-chatgpt-menu.ts",
+                      "bytes":  10290,
+                      "sha256":  "d7728f702c20af39e8727f4c2b67b0e69053ffa77a841d32d826d145fa1c21f4"
+                  },
+                  {
+                      "path":  "source/scripts/inspect-launcher-pages.cjs",
+                      "bytes":  3279,
+                      "sha256":  "5150fdd544454d7439d4c72b8d137d645b35965e8bc1ef45d311aee7a8fa6af4"
+                  },
+                  {
+                      "path":  "source/scripts/inspect-launcher-pages.ts",
+                      "bytes":  706,
+                      "sha256":  "e5073c94b971ccf06be5dd5bafd7ed1e90ca00900b1716d1bd45204c207aa6ed"
+                  },
+                  {
+                      "path":  "source/scripts/install-launcher.ps1",
+                      "bytes":  3439,
+                      "sha256":  "90bb1e1679d7f790aed4fe45487ca09b2e6e11e551eaa700526461c583a1beb9"
+                  },
+                  {
+                      "path":  "source/scripts/install-launcher.sh",
+                      "bytes":  6317,
+                      "sha256":  "b02fee910cd31baa5fa642f603d5fd916c35eb5e426eb762633e485502b2ef2d"
+                  },
+                  {
+                      "path":  "source/scripts/install.sh",
+                      "bytes":  3055,
+                      "sha256":  "00278349790ae0a097b3ed69ca2b81d506f91a6eb32faba1de700d67c3ab96d6"
+                  },
+                  {
+                      "path":  "source/scripts/precommit-secret-scan.ps1",
+                      "bytes":  6982,
+                      "sha256":  "693a119e8d552047400ecc33c892b491e69f97a360a5d5d2406a932c1a046bfb"
+                  },
+                  {
+                      "path":  "source/scripts/smoke-codex-catalog.ts",
+                      "bytes":  2861,
+                      "sha256":  "2c88583b5f818e61138421b0caa95520a8fdc3373b7461bbdf57c2557525e28e"
+                  },
+                  {
+                      "path":  "source/scripts/smoke-release.ts",
+                      "bytes":  8069,
+                      "sha256":  "691c404f23813a22f9b1192c55891357b5e580eb0a5a768c01d1232948482d4f"
+                  },
+                  {
+                      "path":  "source/scripts/start-launcher.ts",
+                      "bytes":  736,
+                      "sha256":  "6c08c2ee404640f3894a11a780a68933b5d38b18a1c7906f6ee28a7e0487d5d3"
+                  },
+                  {
+                      "path":  "source/scripts/verify.ts",
+                      "bytes":  1258,
+                      "sha256":  "e9085f0a9b7ee2d9dcfc9912df331cedbe7e4b00c538c56c9ef0669e7e76debb"
+                  },
+                  {
+                      "path":  "source/src/bridge.ts",
+                      "bytes":  54124,
+                      "sha256":  "cb741cd9bcb5d3a1c271cb8c7d5146f9dfc465bbd023739b8ae7ec28b6cd4c82"
+                  },
+                  {
+                      "path":  "source/src/browser-login.ts",
+                      "bytes":  7208,
+                      "sha256":  "f40b0e96a77d6f847e223d333f7cf2acec07a9f10c9cf304d45bffd4f62c54ab"
+                  },
+                  {
+                      "path":  "source/src/chatgpt-session.ts",
+                      "bytes":  5226,
+                      "sha256":  "d2f76ab16faa5369290ed7f399282b81b10cff919ee78fa23b49d1bd728e76f9"
+                  },
+                  {
+                      "path":  "source/src/chatgpt-web-models.ts",
+                      "bytes":  3945,
+                      "sha256":  "d82d1c30bbeb090f7ebf4c25eb659acea98a8b884d3c88e10a43d1d4fa413767"
+                  },
+                  {
+                      "path":  "source/src/cli.ts",
+                      "bytes":  16934,
+                      "sha256":  "5afcfec0d4a3ead98e2bfdc5eff3b54e9ab85e7e89261a2dc47eb83934e16927"
+                  },
+                  {
+                      "path":  "source/src/codex-integration.ts",
+                      "bytes":  50444,
+                      "sha256":  "faeda787f039ce5f5c8a4ea30abdb1836791049d5b351bd676dba80c211689bc"
+                  },
+                  {
+                      "path":  "source/src/config.ts",
+                      "bytes":  14931,
+                      "sha256":  "d87e830b4f091ccc437bfb6156b93bd7673ff26b3fa7064db9cff2dc5633b2f9"
+                  },
+                  {
+                      "path":  "source/src/doctor.ts",
+                      "bytes":  10690,
+                      "sha256":  "2170fd261a4c596961a95a015d6130fa56ee96ea3f270944ca9a1d269c10d96f"
+                  },
+                  {
+                      "path":  "source/src/event-queue.ts",
+                      "bytes":  1378,
+                      "sha256":  "21f3be62898aeb317e785e128c2c325b2c6942ab552f82077d0c121c7a73fb88"
+                  },
+                  {
+                      "path":  "source/src/http-body.ts",
+                      "bytes":  1313,
+                      "sha256":  "de03e4dd84d4732b9d1c6a7fa448bef6b318b50e3ef3b4a8b826896ae6189400"
+                  },
+                  {
+                      "path":  "source/src/launcher-browser-host.ts",
+                      "bytes":  13103,
+                      "sha256":  "bc4f59fd2dfc829b514568e0fe90190db966770b81b74c7a9bd92968a97b4005"
+                  },
+                  {
+                      "path":  "source/src/model-catalog.ts",
+                      "bytes":  6763,
+                      "sha256":  "1c6992803436b781a5440017ad8bc1dfd5f861337e0667210336c916728bc518"
+                  },
+                  {
+                      "path":  "source/src/native-passthrough.ts",
+                      "bytes":  4608,
+                      "sha256":  "68b69128cc635a95053cd9bacca3972b0d98bba36acd6b804fc2a31df1028ce4"
+                  },
+                  {
+                      "path":  "source/src/process.ts",
+                      "bytes":  1799,
+                      "sha256":  "5b0ab0b3adac1665700cd62e0b574b5a97e767dbad5522eaea7d5bb6cc32365c"
+                  },
+                  {
+                      "path":  "source/src/server.ts",
+                      "bytes":  22549,
+                      "sha256":  "b461b319cf1b9267798baf78faf8b5cf44d7506fb5309b08effc60c5b99d89e3"
+                  },
+                  {
+                      "path":  "source/src/service.ts",
+                      "bytes":  9800,
+                      "sha256":  "f0b6c7a7fb5098dc5383330b224b307ec5e0c9f9faab3e1b914b1360966b87ce"
+                  },
+                  {
+                      "path":  "source/src/setup.ts",
+                      "bytes":  16752,
+                      "sha256":  "a65e1760e74a54f547f4943a22febd845e751589bfba4f59e7bee429e5353706"
+                  },
+                  {
+                      "path":  "source/src/stall-timeout.ts",
+                      "bytes":  790,
+                      "sha256":  "abd4f8883bf90e2e84495a72a0cd59ce2b2491416396f9ac01e075fef164a0de"
+                  },
+                  {
+                      "path":  "source/src/tunnel-service.ts",
+                      "bytes":  5604,
+                      "sha256":  "68ee49353a0bc1a5e4d8d6d6b6ee5e148fc89cd64d602d7307cc389c0fcb8511"
+                  },
+                  {
+                      "path":  "source/src/tunnel.ts",
+                      "bytes":  15713,
+                      "sha256":  "6e58b86a9e10acd6fb92f0951ea6aee35c56874ae11d244b0eef8df0c5389ee9"
+                  },
+                  {
+                      "path":  "source/src/turndown-plugin-gfm.d.ts",
+                      "bytes":  134,
+                      "sha256":  "ea990b5626ea8873e7b47591225d19b6b4c3816331cd5fc4980118779768bfd5"
+                  },
+                  {
+                      "path":  "source/src/types.ts",
+                      "bytes":  13217,
+                      "sha256":  "06f7aba3765f75db763bec62affd65a9206cdecbe8ad794a00034041d986e3a2"
+                  },
+                  {
+                      "path":  "source/src/version.ts",
+                      "bytes":  32,
+                      "sha256":  "17a577eb72975d0cb9363ce43bc5572d868ada7d0ab38404062a08368561af7b"
+                  },
+                  {
+                      "path":  "source/src/adapters/base.ts",
+                      "bytes":  419,
+                      "sha256":  "8441cdd6621d8fcd700383a07c01a234029b3adea854fc6f79119bdcc58ea4f2"
+                  },
+                  {
+                      "path":  "source/src/adapters/image.ts",
+                      "bytes":  416,
+                      "sha256":  "daabf37ff2147c319020e5675743e0ef1c8757bf29bb451a255f171a6ed471fb"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/adapter-error.ts",
+                      "bytes":  580,
+                      "sha256":  "9cb0505c447dc554cfbf35b38b9a8d6ca9db1b980448125f43c82d810161ff67"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/browser-helper-main.ts",
+                      "bytes":  7361,
+                      "sha256":  "222173b6763da14a3917db0b6324ec5bb9de064ff27723711b50387b86703c3b"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/browser-worker.ts",
+                      "bytes":  76704,
+                      "sha256":  "841c8fd85b4e53a20bb949cfe56a41c55dc9d06509e721e768a516f38dafb9c7"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/concurrency.ts",
+                      "bytes":  281,
+                      "sha256":  "11b393a9a63d11f059ee8941a363640fa4266830e1227c5ef8e9800e08d01782"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/environment.ts",
+                      "bytes":  17293,
+                      "sha256":  "3e847c581bfb62e2db70acb6264e7611bb11e82042720c1dab757c21091c5dc3"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/index.ts",
+                      "bytes":  26778,
+                      "sha256":  "cf6c1d9812132146b669b4d1e7560eb3fa9d04444399ed85f655177b01f6c502"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/launcher-helper-client.ts",
+                      "bytes":  15817,
+                      "sha256":  "6194411497e36c31c6b3e9b0815635ba3f66505f0c6c327b6840f408920e7cb9"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/markdown.ts",
+                      "bytes":  5836,
+                      "sha256":  "89355b2ebaf7e26739f7fcaa4c6634be5e38b19cd4e4f564f022b3d112ada1d2"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/mcp-main.ts",
+                      "bytes":  782,
+                      "sha256":  "b84f53656ab0b79ce0a6a12f279ff11a94a84191c635083a3a41f3de29eb1360"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/mcp-server.ts",
+                      "bytes":  18027,
+                      "sha256":  "47323602d642191cbd585cad23114849b5dce02489d34d00fda5482aa90ca4f5"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/model.ts",
+                      "bytes":  1715,
+                      "sha256":  "39faadcbbc35b370989e299606f55a01fe459eea982a746788df290f5200ed18"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/native-tool-decision.ts",
+                      "bytes":  15612,
+                      "sha256":  "f7e8734714e819ee386b88585305819d97e70f982a17aeb62fc509869fbb8195"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/process-line-writer.ts",
+                      "bytes":  1193,
+                      "sha256":  "727b115fc87663fdf476ec5af6fbb4763093d14da706780b9067dc180c0af91d"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/prompt.ts",
+                      "bytes":  18134,
+                      "sha256":  "4174d201b18b74134689cf343459363e2161b6e606aa0e913ff949972af68548"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/thread-environment.ts",
+                      "bytes":  7295,
+                      "sha256":  "7c755c292fa5638536b17143f599d7fc80f0323bf81fa2b35a1f4251820e55f4"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/turn-broker.ts",
+                      "bytes":  21619,
+                      "sha256":  "6a03412b149b941bffbb13aa436924e34e76aaca130415560bcfe030124c7672"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/turn-execution.ts",
+                      "bytes":  11828,
+                      "sha256":  "d7f01cd541f1526877d5adcfaee4d0e83c5cc728c56d317dfac1e6d4288c1d0e"
+                  },
+                  {
+                      "path":  "source/src/adapters/chatgpt-web/usage.ts",
+                      "bytes":  3074,
+                      "sha256":  "f4b31dbe69cfc2394234c488063de249b98f6278e1d741578d517f4d9bc05576"
+                  },
+                  {
+                      "path":  "source/src/lib/errors.ts",
+                      "bytes":  10540,
+                      "sha256":  "9539324bf615e3b1c2a6cc3a36c233d6bab7bed4c9e4042fa1d9b356f539b1e1"
+                  },
+                  {
+                      "path":  "source/src/lib/token-estimate.ts",
+                      "bytes":  1387,
+                      "sha256":  "ee52458858218eac6d9f012c1cec2955f4c04e14ad176851905c99f9942a2727"
+                  },
+                  {
+                      "path":  "source/src/responses/compaction.ts",
+                      "bytes":  9285,
+                      "sha256":  "9c5cc99a1b180ceb876f6e2e66fb9d00f6d964306dc2d10b4dbc8c4dd9243fbe"
+                  },
+                  {
+                      "path":  "source/src/responses/parser.ts",
+                      "bytes":  30130,
+                      "sha256":  "0034b2231ab7a4c7efeb4fe2520d832b696b57666a6e1127bdfb236d3b49095f"
+                  },
+                  {
+                      "path":  "source/src/responses/reasoning-envelope.ts",
+                      "bytes":  2200,
+                      "sha256":  "5df8453122d8816358a013b6b96d4e53a0d2d3820a741754fc68622feebc3fe8"
+                  },
+                  {
+                      "path":  "source/src/responses/schema.ts",
+                      "bytes":  7010,
+                      "sha256":  "4323c7345d0ee239bb704bac286b813872218e970ed66bbc0406759b2c10b684"
+                  },
+                  {
+                      "path":  "source/src/responses/state.ts",
+                      "bytes":  10680,
+                      "sha256":  "4cf4b306388870751f146212012a564cb5b3770bdcdbc4fe7d87bfd4600c6484"
+                  },
+                  {
+                      "path":  "source/src/usage/totals.ts",
+                      "bytes":  545,
+                      "sha256":  "c2f05d79c896c9719dade24b0d31f2824abf86e7e77aacb3843f7fd32d2d8c13"
+                  },
+                  {
+                      "path":  "source/src/web-search/synthetic-tool.ts",
+                      "bytes":  2086,
+                      "sha256":  "e93c7fc70e94aa0d5afc67fa0ff573cf2ea3feb0ac5825114ef9f4a7c4784367"
+                  },
+                  {
+                      "path":  "source/tests/bridge-platform.test.ts",
+                      "bytes":  2020,
+                      "sha256":  "f72f7fd2f70b337d3eddf4c6c8f8f25c276061579dc5517f15b3e4de5f300261"
+                  },
+                  {
+                      "path":  "source/tests/browser-login.test.ts",
+                      "bytes":  2592,
+                      "sha256":  "2ad6561883cc796467c2df13ad912baa9af7afee67127f5d8c72f2332c2fa45d"
+                  },
+                  {
+                      "path":  "source/tests/browser-worker-contract.test.ts",
+                      "bytes":  42648,
+                      "sha256":  "ae5ec7d51e8e4df62e893df71554ac3c67a54b2e30dc12b293a7be94fb667542"
+                  },
+                  {
+                      "path":  "source/tests/chatgpt-web-harness.test.ts",
+                      "bytes":  65599,
+                      "sha256":  "c5360b844a15b4c05d788389a9aa06dea81db73735ae9f1250ac4ce9f43566f5"
+                  },
+                  {
+                      "path":  "source/tests/chatgpt-web-models.test.ts",
+                      "bytes":  3697,
+                      "sha256":  "e4b9c118ebbb99a6aa5613b06731465675d48680c6e95672a5467d564587bf4d"
+                  },
+                  {
+                      "path":  "source/tests/chatgpt-web-usage.test.ts",
+                      "bytes":  993,
+                      "sha256":  "c5beff3b0eaa5ff229043c4e78bb89bf1fc6a4b20ec02a428e8be187d1095be0"
+                  },
+                  {
+                      "path":  "source/tests/cli.test.ts",
+                      "bytes":  5711,
+                      "sha256":  "2583bc12605d8a9993d6786cc1bbc37e95452d3b52a28dd87a35ed4365a6e6cc"
+                  },
+                  {
+                      "path":  "source/tests/codex-integration.test.ts",
+                      "bytes":  23713,
+                      "sha256":  "645c0152780f6688bbbaaa4c8fbd33aef2f891b1741104cceba574d748cb8c9f"
+                  },
+                  {
+                      "path":  "source/tests/compaction-v1.test.ts",
+                      "bytes":  2736,
+                      "sha256":  "f5f4bac67d37a97a8cd99104d8c8480ea29148cd2cd9a8d0cd9834b55c57f2b9"
+                  },
+                  {
+                      "path":  "source/tests/environment.test.ts",
+                      "bytes":  11049,
+                      "sha256":  "a4135d0d9a41b0a2f6781d15f6ef26223ec6e27cfb3ca9701f526b0a4671ac1b"
+                  },
+                  {
+                      "path":  "source/tests/http-body.test.ts",
+                      "bytes":  1085,
+                      "sha256":  "25f861514628a697f87279e37c8c668619164396dd1b193871ae8768ab41d640"
+                  },
+                  {
+                      "path":  "source/tests/launcher-browser-host.test.ts",
+                      "bytes":  8707,
+                      "sha256":  "590c4109818c9940ac39cc0129c210bb6bfd19208f51687e4000b85f1d2543d7"
+                  },
+                  {
+                      "path":  "source/tests/launcher-helper-client.test.ts",
+                      "bytes":  7064,
+                      "sha256":  "7b5d75e9c1d05dc86ae7afb464571dcb8822052f527d326b8d139cb7f2d34128"
+                  },
+                  {
+                      "path":  "source/tests/model-catalog.test.ts",
+                      "bytes":  9411,
+                      "sha256":  "ef1abbd25fbae2c96c0a1e067c5da45644aa974d3fab100c33f04c77e7a57e1d"
+                  },
+                  {
+                      "path":  "source/tests/model-contract.test.ts",
+                      "bytes":  2041,
+                      "sha256":  "f47fce12cfbd6c8f3e2d8d43faefc3b29470bf256f725f2871487e15e9e70541"
+                  },
+                  {
+                      "path":  "source/tests/native-passthrough.test.ts",
+                      "bytes":  9071,
+                      "sha256":  "0074dd83591af2af94093ad82cde779efb7c45a5677d6a3d2d900e4e13338bad"
+                  },
+                  {
+                      "path":  "source/tests/native-tool-decision.test.ts",
+                      "bytes":  4102,
+                      "sha256":  "7322eaf5d9150e053c06a302319ee44c9d144bf8fdcc89b3f4b104b07509c76d"
+                  },
+                  {
+                      "path":  "source/tests/process-line-writer.test.ts",
+                      "bytes":  823,
+                      "sha256":  "cae3020ee9fc54b19a4c5387c06a310da6e11d06ce76c5a857db63f34f9db203"
+                  },
+                  {
+                      "path":  "source/tests/prompt-contract.test.ts",
+                      "bytes":  11944,
+                      "sha256":  "d9330caf13e02a00205c8a7a592ac48f7a13deb4372555214b7b51f39473f2cf"
+                  },
+                  {
+                      "path":  "source/tests/runtime-layout.test.ts",
+                      "bytes":  5961,
+                      "sha256":  "3ca94c9f515c2b16da631a9fc9f48342b514aefb6e3d4ab06e63fa5808ef2d31"
+                  },
+                  {
+                      "path":  "source/tests/server-compaction.test.ts",
+                      "bytes":  9998,
+                      "sha256":  "28a5411b0e3a6303705c279153ce776ddabdf4e40dc6449c163e473d178ff24b"
+                  },
+                  {
+                      "path":  "source/tests/server-lifecycle.test.ts",
+                      "bytes":  11710,
+                      "sha256":  "362ce512ec816c0bc19801940f7f50343b2a4ba211426c667c46108a5f1854f6"
+                  },
+                  {
+                      "path":  "source/tests/server-models.test.ts",
+                      "bytes":  2529,
+                      "sha256":  "f38488ff7e60b808b8e5d99c039c64675a9569313254b9fbc475984bcd2155ac"
+                  },
+                  {
+                      "path":  "source/tests/service-lifecycle.test.ts",
+                      "bytes":  1328,
+                      "sha256":  "f971f04b9dfa8aa5e70cdae20e5f22f4913067571434d1ec4d7b79ed6cdfa40b"
+                  },
+                  {
+                      "path":  "source/tests/setup-lifecycle.test.ts",
+                      "bytes":  1287,
+                      "sha256":  "66f6019587944f3e37146214c6d50e5e6b44972cabf04567653c9ad12c500ce5"
+                  },
+                  {
+                      "path":  "source/tests/token-estimate.test.ts",
+                      "bytes":  1026,
+                      "sha256":  "ffa2b93a46e80d52cc7eb5549d1bd1710cd44bda7c486f68804816be3d297f88"
+                  },
+                  {
+                      "path":  "source/tests/tunnel-service.test.ts",
+                      "bytes":  6291,
+                      "sha256":  "bc7c6a7ac2d928e9b16a2030f16e9512d8c0d174fc8335039eac14d4f9c83de6"
+                  },
+                  {
+                      "path":  "source/tests/tunnel.test.ts",
+                      "bytes":  3326,
+                      "sha256":  "7f302c2c3249cc990eab981a7b804b87aa8845997c6a3b806109e4f8a5afb2bf"
+                  },
+                  {
+                      "path":  "source/tests/turn-broker-lifecycle.test.ts",
+                      "bytes":  8492,
+                      "sha256":  "e0c9c291638e336ad3bfe0c93c19f9ccb1c952d57aa985d888dc298cacc61bdb"
                   }
-              ]
+              ],
+    "excluded":  [
+                     {
+                         "path":  "GITHUB_DESKTOP_PUSH_TEST.txt",
+                         "reason":  "blocked sensitive/test filename: github_desktop_push_test.txt"
+                     },
+                     {
+                         "path":  "diagnostics/latest/.gitkeep",
+                         "reason":  "blocked runtime/generated directory: diagnostics/"
+                     },
+                     {
+                         "path":  "test-results/.gitkeep",
+                         "reason":  "blocked runtime/generated directory: test-results/"
+                     }
+                 ]
 }

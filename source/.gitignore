@@ -1,0 +1,100 @@
+# ============================================================
+# Dependencies / build
+# ============================================================
+node_modules/
+dist/
+build/
+coverage/
+.launcher-runtime/
+.cache/
+tmp/
+temp/
+
+# ============================================================
+# Environment / credentials
+# ============================================================
+.env
+.env.*
+!.env.example
+
+auth.json
+credentials.json
+secrets.json
+
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+
+# ============================================================
+# Databases / local state
+# ============================================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# ============================================================
+# Raw browser / auth state
+# ============================================================
+cookies*
+Cookies*
+Local Storage/
+Session Storage/
+IndexedDB/
+browser-profile/
+user-data-dir/
+
+# ============================================================
+# Raw diagnostics
+# Only sanitized diagnostics may be committed separately.
+# ============================================================
+native-relay-diagnostic/
+diagnostics/raw/
+diagnostics/browser-turns/
+
+# ============================================================
+# Large / generated logs
+# ============================================================
+*.log
+*.trace
+*.har
+
+# ============================================================
+# Archives / temporary backups
+# ============================================================
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+
+*.before-*
+*.backup
+*.bak
+*.tmp
+
+# ============================================================
+# Windows / IDE
+# ============================================================
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+
+# ============================================================
+# Codex private/local state
+# ============================================================
+.codex/
+.codex-chatgpt-web/
+# Repository migration / development backups
+.native-relay-backup-*/
+NATIVE_RELAY_RAW_CAPTURE_CODE_CONTEXT.txt
+
+# Local diagnostic packages
+BROWSER_TURN_*_DIAGNOSTIC.zip
+BROWSER_TURN_*_INVENTORY.txt
+*_RAW_ANSWER_CAPTURE.txt
+*_RAW_CAPTURE*.txt

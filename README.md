@@ -1,45 +1,15 @@
-# Codex ChatGPT Web - Public AI Mirror
+# codex-chatgpt-web AI Mirror
 
-This repository is a deliberately limited public mirror of a private
-development repository.
+This repository is an automatically generated, source-oriented public mirror of the private live branch.
 
-It is NOT the authoritative source repository.
+## Source layout
 
-## Source
+The source/ directory contains Git-tracked project files from the exact private source commit recorded in PRIVATE_SOURCE_COMMIT.txt.
 
-Private branch:
+## Safety model
 
-    live
+The generator excludes known runtime, credential, authentication, browser-state, diagnostic, database, log, archive, and executable paths/extensions. It then runs a fail-closed high-confidence secret scan before changing this public repository and scans the final public working tree again before commit/push.
 
-Private source commit:
+Private GitHub is never pushed by this automation. Private commits and pushes remain manual through GitHub Desktop.
 
-    3949bb982b523fea43ee9033df179a818c336fbe
-
-Mirror generated:
-
-    2026-08-09 01:39:11 +08:00
-
-## Purpose
-
-This mirror allows browser-based AI review of:
-
-- current project status
-- current issues
-- implementation provenance
-- selected source files needed for active engineering work
-
-## Security model
-
-The public mirror uses an explicit allowlist.
-
-The complete private repository is never copied here.
-
-Raw browser state, authentication material, cookies, Codex state,
-SQLite databases, raw diagnostic captures and private runtime logs
-must never be published here.
-
-## Selected source
-
-Only files under selected-source/ are intentionally exposed.
-
-The private Git repository remains the canonical source of truth.
+Mirror format: full-safe-v1

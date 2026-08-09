@@ -1,0 +1,273 @@
+CODEX WEB GPT LAUNCHER PRODUCTIZATION INVENTORY
+
+Created: 2026-08-08 19:32:14
+
+Immutable snapshot:
+C:\Users\PC\Downloads\codex-full-web-sandbox-success-20260808-193027
+
+Productization working copy:
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208
+
+===== CANDIDATE FILES =====
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\assets\icon.ico
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\assets\icon.png
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\assets\icon.svg
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\bun.lock
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\atomic-file.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\autostart.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\browser-helper-verifier.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\browser-host.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\browser-host.cjs.before-sliderfix
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\browser-state.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\cdp-input.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\control-server.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\logging.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\preload.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\process-tree.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime-command.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime-install.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime-supervisor.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\state.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\update.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\update-worker.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\window-state.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\index.html
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\package.json
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\scripts\dev.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\scripts\package.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\scripts\prepare-runtime.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\scripts\smoke-package.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\assets\mcp-connect-connector.gif
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\assets\mcp-create-tunnel.gif
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\i18n.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\icons.tsx
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\main.tsx
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\styles.css
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\tokens.css
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\types.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\atomic-file.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\browser-helper-verifier.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\browser-host.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\cdp-input.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\control-server.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\design-contract.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\logging.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\packaging-contract.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-install.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-supervisor.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\state.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\window-state.test.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tsconfig.json
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\vite.config.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\inspect-launcher-pages.cjs
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\inspect-launcher-pages.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.ps1
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.sh
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\start-launcher.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\adapters\chatgpt-web\launcher-helper-client.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\bridge.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\config.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\launcher-browser-host.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\setup.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\bridge-platform.test.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\launcher-browser-host.test.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\launcher-helper-client.test.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\setup-lifecycle.test.ts
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tsconfig.json
+
+===== KEY MATCHES =====
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\bun.lock:287 [releases] "browserslist": ["browserslist@4.28.7", "", { "dependencies": { "baseline-browser-mapping": "^2.10.44", "caniuse-lite": "^1.0.30001806", "electron-to-chromium": "^1.5.393", "node-releases": "^2.0.51", "update-browserslist-db": "^1.2.3" }, "bin": { "browserslist": "cli.js" } }, "sha512-JxV13hNrFxqjOc8alRbq9dK1MM79NEXYpma2B2J4wAtpWS5zIEIKqWPGCl7N4o7Uc7B7itylh7SuDujATRyyTw=="],
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\bun.lock:555 [releases] "node-releases": ["node-releases@2.0.51", "", {}, "sha512-wRNIrw4DmVLKQlbgOMdkMx27Wrpzes2hh5Jtbi2bjPd+4wJstWIqP5A+lscnqbm0xxmT5Bpg8Lec5ItEBwx6BQ=="],
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:143 [restartRequired] codexRestartRequired: false,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:169 [bridgeEnabled] bridgeEnabled: false,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:171 [restartRequired] codexRestartRequired: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:467 [bridgeEnabled] const result = await runtimeHost.setBridgeEnabled(enabled === true);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:469 [bridgeEnabled] bridgeEnabled: result.active,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:470 [restartRequired] codexRestartRequired: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:502 [bridgeEnabled] bridgeEnabled: false,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:507 [restartRequired] codexRestartRequired: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:513 [launcher:setup-core] handle("launcher:setup-core", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:513 [setup-core] handle("launcher:setup-core", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:519 [setupCore] const result = await runtimeHost.setupCore();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:521 [bridgeEnabled] bridgeEnabled: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:524 [restartRequired] codexRestartRequired: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:537 [restartRequired] return { ok: true, stdout: result.stdout, restartRequired: true };
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:546 [restartRequired] stateStore.update({ mcpRuntimeInstalled: true, mcpGuideStep: 2, codexRestartRequired: true });
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:665 [restartRequired] codexRestartRequired: false,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:787 [bridgeEnabled] bridgeEnabled: upgrade.bridgeEnabled,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:790 [restartRequired] codexRestartRequired: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:802 [bridgeEnabled] bridgeEnabled: upgrade.bridgeEnabled,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:809 [bridgeEnabled] if (current.bridgeEnabled !== route.active) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\main.cjs:810 [bridgeEnabled] const state = stateStore.update({ bridgeEnabled: route.active });
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\preload.cjs:29 [bridgeEnabled] setBridgeEnabled: (enabled) => ipcRenderer.invoke("launcher:bridge-enabled", enabled),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\preload.cjs:31 [launcher:setup-core] setupCore: () => ipcRenderer.invoke("launcher:setup-core"),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\preload.cjs:31 [setupCore] setupCore: () => ipcRenderer.invoke("launcher:setup-core"),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\preload.cjs:31 [setup-core] setupCore: () => ipcRenderer.invoke("launcher:setup-core"),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime.cjs:250 [config.toml] path.join(this.codexHome, "config.toml"),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime.cjs:557 [bridgeEnabled] async setBridgeEnabled(enabled) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime.cjs:687 [setupCore] async setupCore() {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime.cjs:728 [bridgeEnabled] if (!route.active) await this.setBridgeEnabled(false);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\runtime.cjs:732 [bridgeEnabled] bridgeEnabled: route.active,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\state.cjs:14 [bridgeEnabled] bridgeEnabled: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\state.cjs:43 [bridgeEnabled] "bridgeEnabled",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\state.cjs:73 [restartRequired] "codexRestartRequired",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\update.cjs:10 [releases] const RELEASE_API_URL = `https://api.github.com/repos/${REPOSITORY}/releases/latest`;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\electron\update.cjs:67 [releases] const expectedPath = `/${REPOSITORY}/releases/download/v${version}/${assetName}`;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:534 [bridgeEnabled] ? <ActionDot tone={snapshot.state.bridgeEnabled ? "success" : "error"} />
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:845 [setupCore] await api!.setupCore();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:894 [restartRequired] {snapshot.state.codexRestartRequired ? (
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:1264 [bridgeEnabled] const setBridgeEnabled = async (enabled: boolean) => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:1268 [bridgeEnabled] updateState(await api!.setBridgeEnabled(enabled));
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:1305 [bridgeEnabled] checked={snapshot.state.bridgeEnabled}
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\App.tsx:1307 [bridgeEnabled] onChange={(checked) => void setBridgeEnabled(checked)}
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\types.ts:11 [bridgeEnabled] bridgeEnabled: boolean;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\types.ts:22 [restartRequired] codexRestartRequired?: boolean;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\types.ts:124 [bridgeEnabled] setBridgeEnabled(enabled: boolean): Promise<LauncherState>;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\types.ts:126 [restartRequired] setupCore(): Promise<{ ok: boolean; stdout: string; restartRequired: boolean }>;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\src\types.ts:126 [setupCore] setupCore(): Promise<{ ok: boolean; stdout: string; restartRequired: boolean }>;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\design-contract.test.cjs:97 [bridgeEnabled] assert.match(appSource, /api!\.setBridgeEnabled\(enabled\)/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\design-contract.test.cjs:98 [bridgeEnabled] assert.match(appSource, /snapshot\.state\.bridgeEnabled \? "success" : "error"/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\design-contract.test.cjs:102 [bridgeEnabled] assert.match(electronMain, /runtimeHost\.setBridgeEnabled\(enabled === true\)/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\design-contract.test.cjs:103 [restartRequired] assert.match(electronMain, /codexRestartRequired:\s*true/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\packaging-contract.test.cjs:37 [releases] assert.match(installer, /releases\/download/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:32 [setupCore] const result = await fixture.host.setupCore();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:39 [setupCore] const result = await fixture.host.setupCore();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:65 [bridgeEnabled] bridgeEnabled: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:80 [bridgeEnabled] fixture.host.setBridgeEnabled = async (enabled) => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:87 [bridgeEnabled] assert.equal(result.bridgeEnabled, false);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:146 [setupCore] await assert.rejects(fixture.host.setupCore(), /Another launcher operation is active: mcp-setup/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:186 [bridgeEnabled] const result = await fixture.host.setBridgeEnabled(true);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:193 [bridgeEnabled] const result = await fixture.host.setBridgeEnabled(false);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:208 [bridgeEnabled] await assert.rejects(fixture.host.setBridgeEnabled(true), /remained disconnected/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:222 [bridgeEnabled] await assert.rejects(fixture.host.setBridgeEnabled(false), /synthetic route restore failure/);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:305 [config.toml] const codexConfigPath = path.join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-host.test.cjs:436 [config.toml] const codexConfigPath = path.join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-supervisor.test.cjs:56 [17841] port: 17841,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\runtime-supervisor.test.cjs:160 [17841] port: 17841,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\state.test.cjs:25 [bridgeEnabled] bridgeEnabled: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\state.test.cjs:49 [bridgeEnabled] bridgeEnabled: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\state.test.cjs:100 [bridgeEnabled] bridgeEnabled: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs:34 [releases] "https://github.com/miuuyy/codex-chatgpt-web/releases/download/v1.2.0/launcher.zip",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs:38 [releases] "https://github.com/miuuyy/codex-chatgpt-web/releases/download/v1.2.0/launcher.zip",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs:74 [releases] browser_download_url: "https://github.com/miuuyy/codex-chatgpt-web/releases/download/v1.2.0/codex-web-gpt-1.2.0-linux-x64.AppImage",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs:78 [releases] browser_download_url: "https://github.com/miuuyy/codex-chatgpt-web/releases/download/v1.2.0/checksums.txt",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs:121 [releases] browser_download_url: "https://github.com/miuuyy/codex-chatgpt-web/releases/download/v1.2.0/codex-web-gpt-1.2.0-linux-x64.AppImage",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\launcher\tests\update.test.cjs:125 [releases] browser_download_url: "https://github.com/miuuyy/codex-chatgpt-web/releases/download/v1.2.0/checksums.txt",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\README.md:80 [releases] curl -fsSL https://github.com/miuuyy/codex-chatgpt-web/releases/latest/download/install-launcher.sh | sh
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\README.md:86 [releases] irm https://github.com/miuuyy/codex-chatgpt-web/releases/latest/download/install-launcher.ps1 | iex
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\README.zh-CN.md:73 [releases] curl -fsSL https://github.com/miuuyy/codex-chatgpt-web/releases/latest/download/install-launcher.sh | sh
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\README.zh-CN.md:79 [releases] irm https://github.com/miuuyy/codex-chatgpt-web/releases/latest/download/install-launcher.ps1 | iex
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\generate-third-party-notices.ts:84 [standalone] "This file covers runtime JavaScript packages bundled into the standalone executable.",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install.sh:22 [releases] BASE_URL="https://github.com/$REPOSITORY/releases/download/v$VERSION"
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install.sh:71 [standalone] rm -f "$BIN_DIR/codex-chatgpt-web.legacy-standalone"
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.ps1:32 [releases] Invoke-RestMethod "https://api.github.com/repos/$Repository/releases/latest" -TimeoutSec 60
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.ps1:46 [releases] $BaseUrl = "https://github.com/$Repository/releases/download/v$Version"
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.ps1:68 [Start-Process] $Process = Start-Process -FilePath $Installer -ArgumentList "/S" -Wait -PassThru
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.ps1:72 [Start-Process] Start-Process $Executable
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.sh:37 [releases] "https://api.github.com/repos/$REPOSITORY/releases/latest" \
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\install-launcher.sh:51 [releases] BASE_URL="https://github.com/$REPOSITORY/releases/download/v$VERSION"
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\scripts\smoke-codex-catalog.ts:37 [config.toml] writeFileSync(join(process.env.CODEX_HOME, "config.toml"), `model_catalog_json = ${JSON.stringify(catalogPath)}\n`);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\cli.ts:47 [17841] --port NUMBER                Loopback Responses port (default: 17841)
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:25 [model_provider] type ManagedAssignmentKey = "openai_base_url" | "model_provider" | "model_catalog_json";
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:104 [model_provider] model_provider: string;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:108 [model_provider] model_provider: PreviousAssignment;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:150 [config.toml] return join(getCodexHome(), "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:304 [model_provider] model_provider: findTopLevelAssignment(lines, "model_provider"),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:699 [model_provider] && !(key === "model_provider" && assignment.value === "openai"))
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:708 [model_provider] for (const key of ["model_provider", "model_catalog_json"] as const) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:730 [model_provider] if (current.model_provider.present || current.model_catalog_json.present) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:731 [model_provider] throw new Error("Codex model_provider or model_catalog_json changed after setup; refusing to overwrite the user's newer value");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:750 [model_provider] for (const key of ["openai_base_url", "model_provider", "model_catalog_json"] as const) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:786 [model_provider] for (const key of ["openai_base_url", "model_provider", "model_catalog_json"] as const) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:830 [model_provider] const removedAssignments = (["model_provider", "model_catalog_json"] as const)
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:851 [model_provider] for (const key of ["model_provider", "model_catalog_json"] as const) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\codex-integration.ts:1317 [model_provider] for (const key of ["model_provider", "model_catalog_json"] as const) {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\config.ts:117 [17841] port: 17841,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\server.ts:113 [releases] // to observe completion. The request signal releases lifecycle ownership immediately
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\setup.ts:56 [restartRequired] codexRestartRequired: true;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\setup.ts:392 [restartRequired] codexRestartRequired: true,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\tunnel.ts:10 [releases] const RELEASE_BASE = `https://github.com/openai/tunnel-client/releases/download/v${TUNNEL_VERSION}`;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\browser-worker-contract.test.ts:24 [releases] const releases = new Map<string, () => void>();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\browser-worker-contract.test.ts:29 [releases] releases.set(turn.traceId, () => resolve(turn.traceId));
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\browser-worker-contract.test.ts:42 [releases] expect(releases.size).toBe(5);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\browser-worker-contract.test.ts:45 [releases] releases.get("trace_1")?.();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\browser-worker-contract.test.ts:49 [releases] expect(releases.has("trace_6")).toBeTrue();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\browser-worker-contract.test.ts:51 [releases] releases.get(traceId)?.();
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\cli.test.ts:58 [17841] port: 17841,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\cli.test.ts:119 [17841] port: 17841,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:47 [config.toml] join(codexHome, "config.toml"),
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:59 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:66 [17841] expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:72 [model_provider] expect(installed).not.toMatch(/^\s*model_provider\s*=/m);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:74 [model_provider] expect(installed).not.toContain("[model_providers.codex-chatgpt-web]");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:83 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:84 [model_provider] const original = 'model = "gpt-5.6-sol"\nmodel_provider = "openai" # explicit built-in default\n';
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:89 [model_provider] expect(readFileSync(configPath, "utf8")).not.toMatch(/^\s*model_provider\s*=/m);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:97 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:112 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:127 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:142 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:170 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:185 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:186 [model_provider] const original = `model = "gpt-5.6-sol"\nmodel_provider = "existing-provider"\nopenai_base_url = "http://127.0.0.1:9999/v1"\nmodel_catalog_json = "/tmp/native.json"\n\n[features]\ngoals = true\n`;
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:193 [17841] expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:194 [model_provider] expect(installed).not.toMatch(/^\s*model_provider\s*=/m);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:203 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:215 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:229 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:241 [17841] expect(reconnected).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:255 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:270 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:298 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:331 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:360 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:372 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:385 [config.toml] const firstConfig = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:391 [config.toml] const secondConfig = join(secondCodexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:402 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:408 [17841] expect(installed).toContain('\r\nopenai_base_url = "http://127.0.0.1:17841/v1"\r\n');
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:417 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:421 [model_provider] const providerBlock = '# BEGIN codex-chatgpt-web provider\n[model_providers.codex-chatgpt-web]\nname = "Codex + ChatGPT Web"\n# END codex-chatgpt-web provider';
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:422 [model_provider] writeFileSync(configPath, `model = "gpt-5.6-sol"\nmodel_catalog_json = ${JSON.stringify(managedCatalog)}\nmodel_provider = "codex-chatgpt-web"\n\n${providerBlock}\n`);
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:429 [model_provider] installed: { model_provider: "codex-chatgpt-web", model_catalog_json: managedCatalog },
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:431 [model_provider] model_provider: { present: false },
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:440 [model_provider] expect(installed).not.toContain("model_provider");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:441 [17841] expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:446 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:449 [17841] const changed = readFileSync(configPath, "utf8").replace("17841", "17842");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:457 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:470 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:483 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:496 [config.toml] const configPath = join(codexHome, "config.toml");
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\codex-integration.test.ts:510 [17841] expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:8 [17841] const request = new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:14 [17841] host: "127.0.0.1:17841",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:45 [17841] const request = new Request("http://127.0.0.1:17841/v1/responses/compact", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:69 [standalone] test("forwards standalone Web Search through the authenticated native Codex route", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:71 [17841] const request = new Request("http://127.0.0.1:17841/v1/alpha/search?locale=en", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:76 [17841] host: "127.0.0.1:17841",
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:132 [17841] const request = new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:182 [17841] const request = new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:202 [17841] const request = new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\native-passthrough.test.ts:214 [17841] const request = new Request("http://127.0.0.1:17841/v1/models?client_version=0.99.0", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\runtime-layout.test.ts:97 [17841] port: 17841,
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:39 [17841] const response = await compactRequest(new Request("http://127.0.0.1:17841/v1/responses/compact", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:65 [17841] const response = await compactRequest(new Request("http://127.0.0.1:17841/v1/responses/compact", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:97 [17841] const response = await compactRequest(new Request("http://127.0.0.1:17841/v1/responses/compact", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:128 [17841] const response = await responseRequest(new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:155 [17841] const response = await responseRequest(new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:169 [17841] const response = await compactRequest(new Request("http://127.0.0.1:17841/v1/responses/compact", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:185 [17841] const response = await responseRequest(new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:198 [17841] const response = await compactRequest(new Request("http://127.0.0.1:17841/v1/responses/compact", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-compaction.test.ts:227 [17841] const response = await responseRequest(new Request("http://127.0.0.1:17841/v1/responses", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-lifecycle.test.ts:35 [releases] test("HTTP turn tracking releases a cancelled response stream", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-lifecycle.test.ts:84 [releases] test("HTTP turn tracking releases a stream whose client disconnected without cancelling", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-lifecycle.test.ts:105 [releases] test("HTTP turn tracking releases a stream requested by an already disconnected client", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-lifecycle.test.ts:249 [standalone] test("server exposes authenticated standalone Web Search on the routed v1 base URL", async () => {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\server-models.test.ts:10 [17841] const request = new Request("http://127.0.0.1:17841/v1/models?client_version=1.2.3", {
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\tests\service-lifecycle.test.ts:20 [releases] test("releases a verified idle drain", async () => {

@@ -1,0 +1,355 @@
+NATIVE TOOL DECISION CURRENT SOURCE
+
+Created: 2026-08-08 20:04:48
+
+DEV:
+C:\Users\PC\Downloads\codex-chatgpt-web-dev\src\adapters\chatgpt-web\native-tool-decision.ts
+SHA256=02420E45243144967813279C3AB9C24B2DB592769A1A842D79955E266192DCED
+
+PRODUCT:
+C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208\src\adapters\chatgpt-web\native-tool-decision.ts
+SHA256=02420E45243144967813279C3AB9C24B2DB592769A1A842D79955E266192DCED
+
+SAME_HASH=True
+
+============================================================
+DEV native-tool-decision.ts
+============================================================
+import { randomUUID } from "node:crypto";
+import {
+  isAllowedToolChoice,
+  namespacedToolName,
+  resolveToolChoiceWireName,
+  toolAllowedByChoice,
+  type CodexParsedRequest,
+  type CodexTool,
+} from "../../types";
+
+export interface NativeToolRelayRequest {
+  callId: string;
+  wireName: string;
+  freeform: boolean;
+  arguments?: Record<string, unknown>;
+  input?: string;
+}
+
+export type NativeToolDecision =
+  | { type: "final"; content: string }
+  | { type: "tool_calls"; requests: NativeToolRelayRequest[] };
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function parseJsonObject(text: string): Record<string, unknown> {
+  let candidate = text.trim();
+  const fenced = candidate.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  if (fenced) candidate = fenced[1]!.trim();
+
+  const rawAttempts = [candidate];
+  const first = candidate.indexOf("{");
+  const last = candidate.lastIndexOf("}");
+  if (first >= 0 && last > first) rawAttempts.push(candidate.slice(first, last + 1));
+
+  // ChatGPT Markdown may escape underscores inside an otherwise-valid JSON
+  // decision, for example "tool\_call" or "read\_probe". JSON does not
+  // define \_ as a legal escape. Try the original payload first, then a
+  // conservative repaired candidate that removes only an odd stray slash
+  // immediately before an underscore.
+  const attempts = [...new Set(rawAttempts.flatMap(attempt => {
+    const repaired = attempt.replace(/\\+_/g, match => {
+      const slashCount = match.length - 1;
+      if (slashCount % 2 === 0) return match;
+      return "\\".repeat(slashCount - 1) + "_";
+    });
+    return repaired === attempt ? [attempt] : [attempt, repaired];
+  }))];
+
+  let lastError: unknown;
+  for (const attempt of attempts) {
+    try {
+      const parsed: unknown = JSON.parse(attempt);
+      if (!isObject(parsed)) throw new Error("relay decision must be a JSON object");
+      return parsed;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw new Error(
+    `ChatGPT native tool relay returned invalid JSON: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+  );
+}
+
+function relayToolMap(parsed: CodexParsedRequest): Map<string, CodexTool> {
+  const map = new Map<string, CodexTool>();
+  for (const tool of parsed.context.tools ?? []) {
+    map.set(namespacedToolName(tool.namespace, tool.name), tool);
+  }
+  return map;
+}
+
+function ensureToolChoiceAllows(parsed: CodexParsedRequest, wireName: string, tool: CodexTool): void {
+  const choice = parsed.options.toolChoice;
+  if (choice === "none") {
+    throw new Error(`ChatGPT requested ${wireName}, but the active Codex tool_choice is none`);
+  }
+  if (choice && typeof choice === "object" && "name" in choice) {
+    const required = resolveToolChoiceWireName(parsed.context.tools, choice.name);
+    if (required !== wireName) {
+      throw new Error(`ChatGPT requested ${wireName}, but Codex requires tool ${required}`);
+    }
+  }
+  if (isAllowedToolChoice(choice)) {
+    const allowed = new Set(choice.allowedTools);
+    if (!toolAllowedByChoice(tool, allowed)) {
+      throw new Error(`ChatGPT requested ${wireName}, but it is outside Codex allowed_tools`);
+    }
+  }
+}
+
+function toolChoiceRequiresCall(parsed: CodexParsedRequest): boolean {
+  const choice = parsed.options.toolChoice;
+  return choice === "required"
+    || (typeof choice === "object" && choice !== null && "name" in choice)
+    || (isAllowedToolChoice(choice) && choice.mode === "required");
+}
+
+function normalizeCall(
+  parsed: CodexParsedRequest,
+  available: Map<string, CodexTool>,
+  value: unknown,
+  index: number,
+): NativeToolRelayRequest {
+  if (!isObject(value)) throw new Error(`tool_calls[${index}] must be an object`);
+  const name = value.name;
+  if (typeof name !== "string" || !name.trim()) {
+    throw new Error(`tool_calls[${index}].name must be a non-empty string`);
+  }
+  const wireName = name.trim();
+  const tool = available.get(wireName);
+  if (!tool) {
+    throw new Error(`ChatGPT requested a tool that the active Codex round did not advertise: ${wireName}`);
+  }
+  ensureToolChoiceAllows(parsed, wireName, tool);
+
+  const rawArguments = value.arguments ?? {};
+  if (!isObject(rawArguments)) {
+    throw new Error(`tool_calls[${index}].arguments must be a JSON object`);
+  }
+
+  const callId = `call_web_${randomUUID().replaceAll("-", "")}`;
+  if (tool.freeform) {
+    const input = rawArguments.input;
+    if (typeof input !== "string") {
+      throw new Error(`Freeform tool ${wireName} requires arguments.input to be a string`);
+    }
+    return { callId, wireName, freeform: true, input };
+  }
+  return { callId, wireName, freeform: false, arguments: rawArguments };
+}
+
+export function parseNativeToolDecision(text: string, parsed: CodexParsedRequest): NativeToolDecision {
+  const value = parseJsonObject(text);
+  const decision = value.decision;
+
+  if (decision === "final") {
+    if (toolChoiceRequiresCall(parsed)) {
+      throw new Error("ChatGPT returned a final answer, but the active Codex tool_choice requires a tool call");
+    }
+    if (typeof value.content !== "string") {
+      throw new Error("A final relay decision requires string field content");
+    }
+    return { type: "final", content: value.content };
+  }
+
+  if (decision !== "tool_call" && decision !== "tool_calls") {
+    throw new Error(`Unknown ChatGPT native tool relay decision: ${String(decision)}`);
+  }
+
+  const rawCalls = decision === "tool_call"
+    ? [{ name: value.name, arguments: value.arguments }]
+    : value.calls;
+
+  if (!Array.isArray(rawCalls) || rawCalls.length === 0) {
+    throw new Error("A tool relay decision requires at least one tool call");
+  }
+  if (parsed.options.parallelToolCalls === false && rawCalls.length > 1) {
+    throw new Error("ChatGPT returned parallel tool calls while Codex parallel_tool_calls is false");
+  }
+
+  const available = relayToolMap(parsed);
+  const requests = rawCalls.map((call, index) => normalizeCall(parsed, available, call, index));
+  return { type: "tool_calls", requests };
+}
+
+
+============================================================
+PRODUCT native-tool-decision.ts
+============================================================
+import { randomUUID } from "node:crypto";
+import {
+  isAllowedToolChoice,
+  namespacedToolName,
+  resolveToolChoiceWireName,
+  toolAllowedByChoice,
+  type CodexParsedRequest,
+  type CodexTool,
+} from "../../types";
+
+export interface NativeToolRelayRequest {
+  callId: string;
+  wireName: string;
+  freeform: boolean;
+  arguments?: Record<string, unknown>;
+  input?: string;
+}
+
+export type NativeToolDecision =
+  | { type: "final"; content: string }
+  | { type: "tool_calls"; requests: NativeToolRelayRequest[] };
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function parseJsonObject(text: string): Record<string, unknown> {
+  let candidate = text.trim();
+  const fenced = candidate.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  if (fenced) candidate = fenced[1]!.trim();
+
+  const rawAttempts = [candidate];
+  const first = candidate.indexOf("{");
+  const last = candidate.lastIndexOf("}");
+  if (first >= 0 && last > first) rawAttempts.push(candidate.slice(first, last + 1));
+
+  // ChatGPT Markdown may escape underscores inside an otherwise-valid JSON
+  // decision, for example "tool\_call" or "read\_probe". JSON does not
+  // define \_ as a legal escape. Try the original payload first, then a
+  // conservative repaired candidate that removes only an odd stray slash
+  // immediately before an underscore.
+  const attempts = [...new Set(rawAttempts.flatMap(attempt => {
+    const repaired = attempt.replace(/\\+_/g, match => {
+      const slashCount = match.length - 1;
+      if (slashCount % 2 === 0) return match;
+      return "\\".repeat(slashCount - 1) + "_";
+    });
+    return repaired === attempt ? [attempt] : [attempt, repaired];
+  }))];
+
+  let lastError: unknown;
+  for (const attempt of attempts) {
+    try {
+      const parsed: unknown = JSON.parse(attempt);
+      if (!isObject(parsed)) throw new Error("relay decision must be a JSON object");
+      return parsed;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw new Error(
+    `ChatGPT native tool relay returned invalid JSON: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+  );
+}
+
+function relayToolMap(parsed: CodexParsedRequest): Map<string, CodexTool> {
+  const map = new Map<string, CodexTool>();
+  for (const tool of parsed.context.tools ?? []) {
+    map.set(namespacedToolName(tool.namespace, tool.name), tool);
+  }
+  return map;
+}
+
+function ensureToolChoiceAllows(parsed: CodexParsedRequest, wireName: string, tool: CodexTool): void {
+  const choice = parsed.options.toolChoice;
+  if (choice === "none") {
+    throw new Error(`ChatGPT requested ${wireName}, but the active Codex tool_choice is none`);
+  }
+  if (choice && typeof choice === "object" && "name" in choice) {
+    const required = resolveToolChoiceWireName(parsed.context.tools, choice.name);
+    if (required !== wireName) {
+      throw new Error(`ChatGPT requested ${wireName}, but Codex requires tool ${required}`);
+    }
+  }
+  if (isAllowedToolChoice(choice)) {
+    const allowed = new Set(choice.allowedTools);
+    if (!toolAllowedByChoice(tool, allowed)) {
+      throw new Error(`ChatGPT requested ${wireName}, but it is outside Codex allowed_tools`);
+    }
+  }
+}
+
+function toolChoiceRequiresCall(parsed: CodexParsedRequest): boolean {
+  const choice = parsed.options.toolChoice;
+  return choice === "required"
+    || (typeof choice === "object" && choice !== null && "name" in choice)
+    || (isAllowedToolChoice(choice) && choice.mode === "required");
+}
+
+function normalizeCall(
+  parsed: CodexParsedRequest,
+  available: Map<string, CodexTool>,
+  value: unknown,
+  index: number,
+): NativeToolRelayRequest {
+  if (!isObject(value)) throw new Error(`tool_calls[${index}] must be an object`);
+  const name = value.name;
+  if (typeof name !== "string" || !name.trim()) {
+    throw new Error(`tool_calls[${index}].name must be a non-empty string`);
+  }
+  const wireName = name.trim();
+  const tool = available.get(wireName);
+  if (!tool) {
+    throw new Error(`ChatGPT requested a tool that the active Codex round did not advertise: ${wireName}`);
+  }
+  ensureToolChoiceAllows(parsed, wireName, tool);
+
+  const rawArguments = value.arguments ?? {};
+  if (!isObject(rawArguments)) {
+    throw new Error(`tool_calls[${index}].arguments must be a JSON object`);
+  }
+
+  const callId = `call_web_${randomUUID().replaceAll("-", "")}`;
+  if (tool.freeform) {
+    const input = rawArguments.input;
+    if (typeof input !== "string") {
+      throw new Error(`Freeform tool ${wireName} requires arguments.input to be a string`);
+    }
+    return { callId, wireName, freeform: true, input };
+  }
+  return { callId, wireName, freeform: false, arguments: rawArguments };
+}
+
+export function parseNativeToolDecision(text: string, parsed: CodexParsedRequest): NativeToolDecision {
+  const value = parseJsonObject(text);
+  const decision = value.decision;
+
+  if (decision === "final") {
+    if (toolChoiceRequiresCall(parsed)) {
+      throw new Error("ChatGPT returned a final answer, but the active Codex tool_choice requires a tool call");
+    }
+    if (typeof value.content !== "string") {
+      throw new Error("A final relay decision requires string field content");
+    }
+    return { type: "final", content: value.content };
+  }
+
+  if (decision !== "tool_call" && decision !== "tool_calls") {
+    throw new Error(`Unknown ChatGPT native tool relay decision: ${String(decision)}`);
+  }
+
+  const rawCalls = decision === "tool_call"
+    ? [{ name: value.name, arguments: value.arguments }]
+    : value.calls;
+
+  if (!Array.isArray(rawCalls) || rawCalls.length === 0) {
+    throw new Error("A tool relay decision requires at least one tool call");
+  }
+  if (parsed.options.parallelToolCalls === false && rawCalls.length > 1) {
+    throw new Error("ChatGPT returned parallel tool calls while Codex parallel_tool_calls is false");
+  }
+
+  const available = relayToolMap(parsed);
+  const requests = rawCalls.map((call, index) => normalizeCall(parsed, available, call, index));
+  return { type: "tool_calls", requests };
+}
+

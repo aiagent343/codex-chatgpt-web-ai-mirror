@@ -1,0 +1,2266 @@
+CODEX WEB GPT PROVIDER PRODUCTIZATION FULL SOURCE
+
+Created: 2026-08-08 19:42:31
+Root: C:\Users\PC\Downloads\codex-chatgpt-web-productize-20260808-193208
+
+============================================================
+FILE: src\codex-integration.ts
+============================================================
+    1: import { createHash } from "node:crypto";
+    2: import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+    3: import { homedir } from "node:os";
+    4: import { dirname, join, resolve } from "node:path";
+    5: import type { AppConfig } from "./config";
+    6: import { atomicWriteFile, expandUserPath, getConfigDir } from "./config";
+    7: 
+    8: const MANAGED_COMMENT = "# Managed by codex-chatgpt-web; `codex-chatgpt-web uninstall` restores prior values.";
+    9: const MANAGED_REMOTE_COMPACTION_LINE =
+   10:   "remote_compaction_v2 = false # Managed by codex-chatgpt-web: bounds retained Web image history.";
+   11: const MANAGED_MULTI_AGENT_LINE =
+   12:   "multi_agent = true # Managed by codex-chatgpt-web: enables routed Web subagents.";
+   13: const MANAGED_MULTI_AGENT_V2_LINE =
+   14:   "multi_agent_v2 = false # Managed by codex-chatgpt-web: keeps routed Web subagent payloads readable.";
+   15: const MANAGED_MULTI_AGENT_V2_TABLE_LINE =
+   16:   "enabled = false # Managed by codex-chatgpt-web: keeps routed Web subagent payloads readable.";
+   17: 
+   18: interface PreviousAssignment {
+   19:   present: boolean;
+   20:   rawLine?: string;
+   21:   value?: string;
+   22:   index?: number;
+   23: }
+   24: 
+   25: type ManagedAssignmentKey = "openai_base_url" | "model_provider" | "model_catalog_json";
+   26: 
+   27: interface PreviousFeatureAssignment extends PreviousAssignment {
+   28:   tablePresent: boolean;
+   29:   tableName?: "features" | "features.multi_agent_v2";
+   30: }
+   31: 
+   32: export interface CodexIntegrationJournal {
+   33:   version: 6;
+   34:   active: boolean;
+   35:   configPath: string;
+   36:   installed: {
+   37:     openai_base_url: string;
+   38:     remote_compaction_v2: false;
+   39:     multi_agent: true;
+   40:     multi_agent_v2: false;
+   41:   };
+   42:   previous: Record<ManagedAssignmentKey, PreviousAssignment>;
+   43:   previousRemoteCompactionV2: PreviousFeatureAssignment;
+   44:   previousMultiAgent: PreviousFeatureAssignment;
+   45:   previousMultiAgentV2: PreviousFeatureAssignment;
+   46:   format?: {
+   47:     lineEnding: "\n" | "\r\n";
+   48:     trailingNewline: boolean;
+   49:   };
+   50: }
+   51: 
+   52: interface LegacyCodexIntegrationJournalV5 {
+   53:   version: 5;
+   54:   active: boolean;
+   55:   configPath: string;
+   56:   installed: {
+   57:     openai_base_url: string;
+   58:     remote_compaction_v2: false;
+   59:     multi_agent: true;
+   60:   };
+   61:   previous: Record<ManagedAssignmentKey, PreviousAssignment>;
+   62:   previousRemoteCompactionV2: PreviousFeatureAssignment;
+   63:   previousMultiAgent: PreviousFeatureAssignment;
+   64:   format?: {
+   65:     lineEnding: "\n" | "\r\n";
+   66:     trailingNewline: boolean;
+   67:   };
+   68: }
+   69: 
+   70: interface LegacyCodexIntegrationJournalV4 {
+   71:   version: 4;
+   72:   active: boolean;
+   73:   configPath: string;
+   74:   installed: {
+   75:     openai_base_url: string;
+   76:   };
+   77:   previous: Record<ManagedAssignmentKey, PreviousAssignment>;
+   78:   format?: {
+   79:     lineEnding: "\n" | "\r\n";
+   80:     trailingNewline: boolean;
+   81:   };
+   82: }
+   83: 
+   84: interface LegacyCodexIntegrationJournalV3 {
+   85:   version: 3;
+   86:   configPath: string;
+   87:   installed: {
+   88:     openai_base_url: string;
+   89:   };
+   90:   previous: Record<ManagedAssignmentKey, PreviousAssignment>;
+   91:   format?: {
+   92:     lineEnding: "\n" | "\r\n";
+   93:     trailingNewline: boolean;
+   94:   };
+   95: }
+   96: 
+   97: interface LegacyCodexIntegrationJournal {
+   98:   version: 2;
+   99:   configPath: string;
+  100:   catalogPath: string;
+  101:   catalogSha256: string;
+  102:   providerBlock: string;
+  103:   installed: {
+  104:     model_provider: string;
+  105:     model_catalog_json: string;
+  106:   };
+  107:   previous: {
+  108:     model_provider: PreviousAssignment;
+  109:     model_catalog_json: PreviousAssignment;
+  110:   };
+  111: }
+  112: 
+  113: type ManagedRouteJournal =
+  114:   | CodexIntegrationJournal
+  115:   | LegacyCodexIntegrationJournalV5
+  116:   | LegacyCodexIntegrationJournalV4
+  117:   | LegacyCodexIntegrationJournalV3;
+  118: type AnyCodexIntegrationJournal = ManagedRouteJournal | LegacyCodexIntegrationJournal;
+  119: 
+  120: interface FileSnapshot {
+  121:   path: string;
+  122:   exists: boolean;
+  123:   data?: Buffer;
+  124: }
+  125: 
+  126: export interface InstallCodexIntegrationOptions {
+  127:   replaceExistingRoute?: boolean;
+  128: }
+  129: 
+  130: export interface UninstallCodexIntegrationResult {
+  131:   changed: boolean;
+  132: }
+  133: 
+  134: export interface SetCodexIntegrationActiveResult {
+  135:   changed: boolean;
+  136:   active: boolean;
+  137: }
+  138: 
+  139: export interface CodexModelContextOverride {
+  140:   model: string;
+  141:   contextWindow: number;
+  142: }
+  143: 
+  144: export function getCodexHome(): string {
+  145:   const configured = process.env.CODEX_HOME?.trim();
+  146:   return resolve(expandUserPath(configured || join(homedir(), ".codex")));
+  147: }
+  148: 
+  149: export function getCodexConfigPath(): string {
+  150:   return join(getCodexHome(), "config.toml");
+  151: }
+  152: 
+  153: export function getCodexModelsCachePath(): string {
+  154:   return join(getCodexHome(), "models_cache.json");
+  155: }
+  156: 
+  157: export function getCodexJournalPath(): string {
+  158:   return join(getConfigDir(), "codex", "integration-journal.json");
+  159: }
+  160: 
+  161: function routeUrl(config: AppConfig): string {
+  162:   return `http://${config.host}:${config.port}/v1`;
+  163: }
+  164: 
+  165: function sha256(value: string | Uint8Array): string {
+  166:   return createHash("sha256").update(value).digest("hex");
+  167: }
+  168: 
+  169: function snapshotFile(path: string): FileSnapshot {
+  170:   return existsSync(path)
+  171:     ? { path, exists: true, data: readFileSync(path) }
+  172:     : { path, exists: false };
+  173: }
+  174: 
+  175: function restoreFileSnapshot(snapshot: FileSnapshot): void {
+  176:   if (snapshot.exists) {
+  177:     if (!snapshot.data) throw new Error(`File snapshot is missing data: ${snapshot.path}`);
+  178:     atomicWriteFile(snapshot.path, snapshot.data);
+  179:   } else {
+  180:     rmSync(snapshot.path, { force: true });
+  181:   }
+  182: }
+  183: 
+  184: function writeFilesWithCompensation(
+  185:   writes: Array<{ path: string; data: string | Uint8Array }>,
+  186:   removals: string[] = [],
+  187: ): void {
+  188:   const paths = [...new Set([...writes.map(write => write.path), ...removals])];
+  189:   const snapshots = paths.map(snapshotFile);
+  190:   try {
+  191:     for (const write of writes) atomicWriteFile(write.path, write.data);
+  192:     for (const removal of removals) rmSync(removal, { force: true });
+  193:   } catch (error) {
+  194:     const rollbackFailures: string[] = [];
+  195:     for (const snapshot of [...snapshots].reverse()) {
+  196:       try {
+  197:         restoreFileSnapshot(snapshot);
+  198:       } catch (rollbackError) {
+  199:         rollbackFailures.push(`${snapshot.path}: ${rollbackError instanceof Error ? rollbackError.message : String(rollbackError)}`);
+  200:       }
+  201:     }
+  202:     const primary = error instanceof Error ? error.message : String(error);
+  203:     throw new Error(
+  204:       rollbackFailures.length > 0
+  205:         ? `${primary}; Codex integration rollback also failed: ${rollbackFailures.join("; ")}`
+  206:         : primary,
+  207:     );
+  208:   }
+  209: }
+  210: 
+  211: function firstTableIndex(lines: string[]): number {
+  212:   const index = lines.findIndex(line => /^\s*\[\[?[^\]]+\]\]?\s*(?:#.*)?$/.test(line));
+  213:   return index < 0 ? lines.length : index;
+  214: }
+  215: 
+  216: function assignmentRegex(key: string): RegExp {
+  217:   return new RegExp(`^\\s*${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*=\\s*(.+?)\\s*$`);
+  218: }
+  219: 
+  220: function stripTomlComment(value: string): string {
+  221:   let quote: "'" | '"' | undefined;
+  222:   let escaped = false;
+  223:   for (let index = 0; index < value.length; index += 1) {
+  224:     const char = value[index]!;
+  225:     if (escaped) {
+  226:       escaped = false;
+  227:       continue;
+  228:     }
+  229:     if (quote === '"' && char === "\\") {
+  230:       escaped = true;
+  231:       continue;
+  232:     }
+  233:     if (quote) {
+  234:       if (char === quote) quote = undefined;
+  235:       continue;
+  236:     }
+  237:     if (char === '"' || char === "'") {
+  238:       quote = char;
+  239:       continue;
+  240:     }
+  241:     if (char === "#") return value.slice(0, index).trimEnd();
+  242:   }
+  243:   return value.trimEnd();
+  244: }
+  245: 
+  246: function decodeTomlString(raw: string, key: string): string {
+  247:   const value = stripTomlComment(raw).trim();
+  248:   if (value.startsWith('"') && value.endsWith('"')) {
+  249:     try {
+  250:       return JSON.parse(value) as string;
+  251:     } catch {
+  252:       throw new Error(`Could not parse ${key} in Codex config`);
+  253:     }
+  254:   }
+  255:   if (value.startsWith("'") && value.endsWith("'")) return value.slice(1, -1);
+  256:   throw new Error(`${key} in Codex config must be a quoted string`);
+  257: }
+  258: 
+  259: function findTopLevelAssignment(lines: string[], key: string): PreviousAssignment {
+  260:   const regex = assignmentRegex(key);
+  261:   const matches: PreviousAssignment[] = [];
+  262:   for (let index = 0; index < firstTableIndex(lines); index += 1) {
+  263:     const line = lines[index]!;
+  264:     if (/^\s*#/.test(line)) continue;
+  265:     const match = regex.exec(line);
+  266:     if (match) matches.push({ present: true, rawLine: line, value: decodeTomlString(match[1]!, key), index });
+  267:   }
+  268:   if (matches.length > 1) throw new Error(`Codex config contains duplicate top-level ${key} assignments`);
+  269:   return matches[0] ?? { present: false };
+  270: }
+  271: 
+  272: function findTopLevelPositiveInteger(lines: string[], key: string): number | undefined {
+  273:   const regex = assignmentRegex(key);
+  274:   const matches: string[] = [];
+  275:   for (let index = 0; index < firstTableIndex(lines); index += 1) {
+  276:     const line = lines[index]!;
+  277:     if (/^\s*#/.test(line)) continue;
+  278:     const match = regex.exec(line);
+  279:     if (match) matches.push(stripTomlComment(match[1]!).trim());
+  280:   }
+  281:   if (matches.length > 1) throw new Error(`Codex config contains duplicate top-level ${key} assignments`);
+  282:   if (matches.length === 0) return undefined;
+  283:   const normalized = matches[0]!.replaceAll("_", "");
+  284:   if (!/^\d+$/.test(normalized)) throw new Error(`${key} in Codex config must be a positive integer`);
+  285:   const value = Number(normalized);
+  286:   if (!Number.isSafeInteger(value) || value <= 0) throw new Error(`${key} in Codex config must be a positive integer`);
+  287:   return value;
+  288: }
+  289: 
+  290: export function readCodexModelContextOverride(): CodexModelContextOverride | undefined {
+  291:   const path = getCodexConfigPath();
+  292:   if (!existsSync(path)) return undefined;
+  293:   const text = readFileSync(path, "utf8");
+  294:   const lines = splitLines(text);
+  295:   const contextWindow = findTopLevelPositiveInteger(lines, "model_context_window");
+  296:   if (contextWindow === undefined) return undefined;
+  297:   const model = findTopLevelAssignment(lines, "model").value;
+  298:   return model ? { model, contextWindow } : undefined;
+  299: }
+  300: 
+  301: function assignments(lines: string[]): Record<ManagedAssignmentKey, PreviousAssignment> {
+  302:   return {
+  303:     openai_base_url: findTopLevelAssignment(lines, "openai_base_url"),
+  304:     model_provider: findTopLevelAssignment(lines, "model_provider"),
+  305:     model_catalog_json: findTopLevelAssignment(lines, "model_catalog_json"),
+  306:   };
+  307: }
+  308: 
+  309: function textFormat(text: string): NonNullable<CodexIntegrationJournal["format"]> {
+  310:   return {
+  311:     lineEnding: text.includes("\r\n") ? "\r\n" : "\n",
+  312:     trailingNewline: /\r?\n$/.test(text),
+  313:   };
+  314: }
+  315: 
+  316: function splitLines(text: string): string[] {
+  317:   return text.length > 0 ? text.replace(/\r?\n$/, "").split(/\r?\n/) : [];
+  318: }
+  319: 
+  320: /**
+  321:  * The Codex config belongs to the user. Every edit keeps each untouched line byte-for-byte,
+  322:  * including its own terminator, so a file with mixed line endings is never normalized.
+  323:  */
+  324: interface CodexConfigDocument {
+  325:   lines: string[];
+  326:   endings: string[];
+  327: }
+  328: 
+  329: function parseDocument(text: string): CodexConfigDocument {
+  330:   const lines: string[] = [];
+  331:   const endings: string[] = [];
+  332:   const lineBreak = /\r\n|\n|\r/g;
+  333:   let start = 0;
+  334:   let match: RegExpExecArray | null;
+  335:   while ((match = lineBreak.exec(text)) !== null) {
+  336:     lines.push(text.slice(start, match.index));
+  337:     endings.push(match[0]);
+  338:     start = match.index + match[0].length;
+  339:   }
+  340:   if (start < text.length) {
+  341:     lines.push(text.slice(start));
+  342:     endings.push("");
+  343:   }
+  344:   return { lines, endings };
+  345: }
+  346: 
+  347: function renderDocument(document: CodexConfigDocument): string {
+  348:   return document.lines.map((line, index) => `${line}${document.endings[index] ?? ""}`).join("");
+  349: }
+  350: 
+  351: function dominantLineEnding(document: CodexConfigDocument): string {
+  352:   return document.endings.find(ending => ending.length > 0) ?? "\n";
+  353: }
+  354: 
+  355: function insertDocumentLine(document: CodexConfigDocument, index: number, line: string): void {
+  356:   const position = Math.max(0, Math.min(index, document.lines.length));
+  357:   const ending = dominantLineEnding(document);
+  358:   if (position === document.lines.length) {
+  359:     const lastIndex = document.lines.length - 1;
+  360:     const trailing = lastIndex >= 0 ? document.endings[lastIndex]! : ending;
+  361:     if (lastIndex >= 0) document.endings[lastIndex] = ending;
+  362:     document.lines.push(line);
+  363:     document.endings.push(trailing);
+  364:     return;
+  365:   }
+  366:   document.lines.splice(position, 0, line);
+  367:   document.endings.splice(position, 0, document.endings[position] ?? ending);
+  368: }
+  369: 
+  370: function removeDocumentLine(document: CodexConfigDocument, index: number): void {
+  371:   if (index < 0 || index >= document.lines.length) return;
+  372:   const wasLast = index === document.lines.length - 1;
+  373:   const trailing = document.endings[index] ?? "";
+  374:   document.lines.splice(index, 1);
+  375:   document.endings.splice(index, 1);
+  376:   if (wasLast && document.endings.length > 0) document.endings[document.endings.length - 1] = trailing;
+  377: }
+  378: 
+  379: function removeManagedComment(document: CodexConfigDocument): void {
+  380:   for (let index = document.lines.length - 1; index >= 0; index -= 1) {
+  381:     if (document.lines[index] === MANAGED_COMMENT) removeDocumentLine(document, index);
+  382:   }
+  383: }
+  384: 
+  385: interface TomlTableRange {
+  386:   headerIndex: number;
+  387:   endIndex: number;
+  388: }
+  389: 
+  390: function findTomlTable(lines: string[], tableName: string): TomlTableRange | undefined {
+  391:   const escaped = tableName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  392:   const header = new RegExp(`^\\s*\\[${escaped}\\]\\s*(?:#.*)?$`);
+  393:   const matches = lines
+  394:     .map((line, index) => header.test(line) ? index : -1)
+  395:     .filter(index => index >= 0);
+  396:   if (matches.length > 1) throw new Error(`Codex config contains duplicate [${tableName}] tables`);
+  397:   const headerIndex = matches[0];
+  398:   if (headerIndex === undefined) return undefined;
+  399:   const relativeEnd = lines
+  400:     .slice(headerIndex + 1)
+  401:     .findIndex(line => /^\s*\[\[?[^\]]+\]\]?\s*(?:#.*)?$/.test(line));
+  402:   return {
+  403:     headerIndex,
+  404:     endIndex: relativeEnd < 0 ? lines.length : headerIndex + 1 + relativeEnd,
+  405:   };
+  406: }
+  407: 
+  408: function findBooleanAssignmentInTable(
+  409:   lines: string[],
+  410:   tableName: "features" | "features.multi_agent_v2",
+  411:   key: string,
+  412: ): PreviousFeatureAssignment {
+  413:   const table = findTomlTable(lines, tableName);
+  414:   if (!table) return { present: false, tablePresent: false, tableName };
+  415:   const regex = assignmentRegex(key);
+  416:   const matches: PreviousAssignment[] = [];
+  417:   for (let index = table.headerIndex + 1; index < table.endIndex; index += 1) {
+  418:     const line = lines[index]!;
+  419:     if (/^\s*#/.test(line)) continue;
+  420:     const match = regex.exec(line);
+  421:     if (!match) continue;
+  422:     const value = stripTomlComment(match[1]!).trim();
+  423:     if (value !== "true" && value !== "false") {
+  424:       throw new Error(`${key} in Codex [${tableName}] must be a boolean`);
+  425:     }
+  426:     matches.push({ present: true, rawLine: line, value, index });
+  427:   }
+  428:   if (matches.length > 1) {
+  429:     throw new Error(`Codex config contains duplicate [${tableName}].${key} assignments`);
+  430:   }
+  431:   return { ...(matches[0] ?? { present: false }), tablePresent: true, tableName };
+  432: }
+  433: 
+  434: function findFeatureAssignment(lines: string[], key: string): PreviousFeatureAssignment {
+  435:   return findBooleanAssignmentInTable(lines, "features", key);
+  436: }
+  437: 
+  438: function findMultiAgentV2Assignment(lines: string[]): PreviousFeatureAssignment {
+  439:   const scalar = findFeatureAssignment(lines, "multi_agent_v2");
+  440:   const table = findTomlTable(lines, "features.multi_agent_v2");
+  441:   if (scalar.present && table) {
+  442:     throw new Error(
+  443:       "Codex config defines multi_agent_v2 as both [features] scalar and [features.multi_agent_v2] table",
+  444:     );
+  445:   }
+  446:   return table
+  447:     ? findBooleanAssignmentInTable(lines, "features.multi_agent_v2", "enabled")
+  448:     : scalar;
+  449: }
+  450: 
+  451: function installBooleanFeature(
+  452:   text: string,
+  453:   key: string,
+  454:   managedLine: string,
+  455: ): {
+  456:   text: string;
+  457:   previous: PreviousFeatureAssignment;
+  458: } {
+  459:   const document = parseDocument(text);
+  460:   const previous = findFeatureAssignment(document.lines, key);
+  461:   let table = findTomlTable(document.lines, "features");
+  462:   if (!table) {
+  463:     insertDocumentLine(document, document.lines.length, "[features]");
+  464:     table = findTomlTable(document.lines, "features")!;
+  465:   }
+  466:   const current = findFeatureAssignment(document.lines, key);
+  467:   if (current.index !== undefined) {
+  468:     document.lines[current.index] = managedLine;
+  469:   } else {
+  470:     insertDocumentLine(document, table.endIndex, managedLine);
+  471:   }
+  472:   return { text: renderDocument(document), previous };
+  473: }
+  474: 
+  475: function installMultiAgentV2Feature(text: string): {
+  476:   text: string;
+  477:   previous: PreviousFeatureAssignment;
+  478: } {
+  479:   const document = parseDocument(text);
+  480:   const previous = findMultiAgentV2Assignment(document.lines);
+  481:   if (previous.tableName !== "features.multi_agent_v2") {
+  482:     return installBooleanFeature(text, "multi_agent_v2", MANAGED_MULTI_AGENT_V2_LINE);
+  483:   }
+  484:   const table = findTomlTable(document.lines, "features.multi_agent_v2");
+  485:   if (!table) throw new Error("Codex [features.multi_agent_v2] table disappeared during setup");
+  486:   const current = findBooleanAssignmentInTable(
+  487:     document.lines,
+  488:     "features.multi_agent_v2",
+  489:     "enabled",
+  490:   );
+  491:   if (current.index !== undefined) {
+  492:     document.lines[current.index] = MANAGED_MULTI_AGENT_V2_TABLE_LINE;
+  493:   } else {
+  494:     insertDocumentLine(document, table.endIndex, MANAGED_MULTI_AGENT_V2_TABLE_LINE);
+  495:   }
+  496:   return { text: renderDocument(document), previous };
+  497: }
+  498: 
+  499: function verifyInstalledBooleanFeature(
+  500:   text: string,
+  501:   key: string,
+  502:   expectedValue: "true" | "false",
+  503:   managedLine: string,
+  504: ): void {
+  505:   const current = findFeatureAssignment(splitLines(text), key);
+  506:   if (current.value !== expectedValue || current.rawLine !== managedLine) {
+  507:     throw new Error(
+  508:       `Codex [features].${key} changed after setup; refusing to overwrite the user's newer value`,
+  509:     );
+  510:   }
+  511: }
+  512: 
+  513: function verifyInstalledMultiAgentV2Feature(
+  514:   text: string,
+  515:   previous: PreviousFeatureAssignment,
+  516: ): void {
+  517:   if (previous.tableName !== "features.multi_agent_v2") {
+  518:     const current = findMultiAgentV2Assignment(splitLines(text));
+  519:     if (current.tableName !== "features"
+  520:       || current.value !== "false"
+  521:       || current.rawLine !== MANAGED_MULTI_AGENT_V2_LINE) {
+  522:       throw new Error(
+  523:         "Codex [features].multi_agent_v2 changed after setup; refusing to overwrite the user's newer value",
+  524:       );
+  525:     }
+  526:     return;
+  527:   }
+  528:   const lines = splitLines(text);
+  529:   if (findFeatureAssignment(lines, "multi_agent_v2").present) {
+  530:     throw new Error(
+  531:       "Codex [features].multi_agent_v2 changed after setup; refusing to overwrite the user's newer value",
+  532:     );
+  533:   }
+  534:   const current = findBooleanAssignmentInTable(lines, "features.multi_agent_v2", "enabled");
+  535:   if (current.value !== "false" || current.rawLine !== MANAGED_MULTI_AGENT_V2_TABLE_LINE) {
+  536:     throw new Error(
+  537:       "Codex [features.multi_agent_v2].enabled changed after setup; refusing to overwrite the user's newer value",
+  538:     );
+  539:   }
+  540: }
+  541: 
+  542: function restoreBooleanFeature(
+  543:   text: string,
+  544:   key: string,
+  545:   expectedValue: "true" | "false",
+  546:   managedLine: string,
+  547:   previous: PreviousFeatureAssignment,
+  548: ): string {
+  549:   verifyInstalledBooleanFeature(text, key, expectedValue, managedLine);
+  550:   const document = parseDocument(text);
+  551:   const current = findFeatureAssignment(document.lines, key);
+  552:   if (current.index === undefined) throw new Error(`Managed Codex ${key} is missing`);
+  553:   if (previous.present) {
+  554:     if (!previous.rawLine) {
+  555:       throw new Error(`Codex integration journal is missing the prior ${key} line`);
+  556:     }
+  557:     document.lines[current.index] = previous.rawLine;
+  558:   } else {
+  559:     removeDocumentLine(document, current.index);
+  560:     if (!previous.tablePresent) {
+  561:       const table = findTomlTable(document.lines, "features");
+  562:       if (!table) throw new Error("Managed Codex [features] table is missing");
+  563:       const remaining = document.lines
+  564:         .slice(table.headerIndex + 1, table.endIndex)
+  565:         .filter(line => line.trim().length > 0);
+  566:       if (remaining.length === 0) removeDocumentLine(document, table.headerIndex);
+  567:     }
+  568:   }
+  569:   return renderDocument(document);
+  570: }
+  571: 
+  572: function restoreMultiAgentV2Feature(
+  573:   text: string,
+  574:   previous: PreviousFeatureAssignment,
+  575: ): string {
+  576:   if (previous.tableName !== "features.multi_agent_v2") {
+  577:     return restoreBooleanFeature(
+  578:       text,
+  579:       "multi_agent_v2",
+  580:       "false",
+  581:       MANAGED_MULTI_AGENT_V2_LINE,
+  582:       previous,
+  583:     );
+  584:   }
+  585:   verifyInstalledMultiAgentV2Feature(text, previous);
+  586:   const document = parseDocument(text);
+  587:   const current = findBooleanAssignmentInTable(
+  588:     document.lines,
+  589:     "features.multi_agent_v2",
+  590:     "enabled",
+  591:   );
+  592:   if (current.index === undefined) throw new Error("Managed Codex multi_agent_v2.enabled is missing");
+  593:   if (previous.present) {
+  594:     if (!previous.rawLine) {
+  595:       throw new Error("Codex integration journal is missing the prior multi_agent_v2.enabled line");
+  596:     }
+  597:     document.lines[current.index] = previous.rawLine;
+  598:   } else {
+  599:     removeDocumentLine(document, current.index);
+  600:   }
+  601:   return renderDocument(document);
+  602: }
+  603: 
+  604: function installManagedFeatures(text: string): {
+  605:   text: string;
+  606:   previousRemoteCompactionV2: PreviousFeatureAssignment;
+  607:   previousMultiAgent: PreviousFeatureAssignment;
+  608:   previousMultiAgentV2: PreviousFeatureAssignment;
+  609: } {
+  610:   const compaction = installBooleanFeature(
+  611:     text,
+  612:     "remote_compaction_v2",
+  613:     MANAGED_REMOTE_COMPACTION_LINE,
+  614:   );
+  615:   const multiAgent = installBooleanFeature(
+  616:     compaction.text,
+  617:     "multi_agent",
+  618:     MANAGED_MULTI_AGENT_LINE,
+  619:   );
+  620:   const multiAgentV2 = installMultiAgentV2Feature(multiAgent.text);
+  621:   return {
+  622:     text: multiAgentV2.text,
+  623:     previousRemoteCompactionV2: compaction.previous,
+  624:     previousMultiAgent: multiAgent.previous,
+  625:     previousMultiAgentV2: multiAgentV2.previous,
+  626:   };
+  627: }
+  628: 
+  629: function verifyInstalledFeatures(
+  630:   text: string,
+  631:   journal: CodexIntegrationJournal | LegacyCodexIntegrationJournalV5,
+  632: ): void {
+  633:   verifyInstalledBooleanFeature(
+  634:     text,
+  635:     "remote_compaction_v2",
+  636:     "false",
+  637:     MANAGED_REMOTE_COMPACTION_LINE,
+  638:   );
+  639:   verifyInstalledBooleanFeature(text, "multi_agent", "true", MANAGED_MULTI_AGENT_LINE);
+  640:   if (journal.version === 6) {
+  641:     verifyInstalledMultiAgentV2Feature(text, journal.previousMultiAgentV2);
+  642:   }
+  643: }
+  644: 
+  645: function restoreManagedFeatures(
+  646:   text: string,
+  647:   journal: CodexIntegrationJournal | LegacyCodexIntegrationJournalV5,
+  648: ): string {
+  649:   const withoutMultiAgentV2 = journal.version === 6
+  650:     ? restoreMultiAgentV2Feature(text, journal.previousMultiAgentV2)
+  651:     : text;
+  652:   const withoutMultiAgent = restoreBooleanFeature(
+  653:     withoutMultiAgentV2,
+  654:     "multi_agent",
+  655:     "true",
+  656:     MANAGED_MULTI_AGENT_LINE,
+  657:     journal.previousMultiAgent,
+  658:   );
+  659:   return restoreBooleanFeature(
+  660:     withoutMultiAgent,
+  661:     "remote_compaction_v2",
+  662:     "false",
+  663:     MANAGED_REMOTE_COMPACTION_LINE,
+  664:     journal.previousRemoteCompactionV2,
+  665:   );
+  666: }
+  667: 
+  668: function installIntegrationConfig(
+  669:   text: string,
+  670:   installedUrl: string,
+  671:   replaceExistingRoute: boolean,
+  672: ): {
+  673:   text: string;
+  674:   previous: CodexIntegrationJournal["previous"];
+  675:   previousRemoteCompactionV2: PreviousFeatureAssignment;
+  676:   previousMultiAgent: PreviousFeatureAssignment;
+  677:   previousMultiAgentV2: PreviousFeatureAssignment;
+  678: } {
+  679:   const route = installRoute(text, installedUrl, replaceExistingRoute);
+  680:   const features = installManagedFeatures(route.text);
+  681:   return {
+  682:     text: features.text,
+  683:     previous: route.previous,
+  684:     previousRemoteCompactionV2: features.previousRemoteCompactionV2,
+  685:     previousMultiAgent: features.previousMultiAgent,
+  686:     previousMultiAgentV2: features.previousMultiAgentV2,
+  687:   };
+  688: }
+  689: 
+  690: function installRoute(
+  691:   text: string,
+  692:   installedUrl: string,
+  693:   replaceExistingRoute: boolean,
+  694: ): { text: string; previous: CodexIntegrationJournal["previous"] } {
+  695:   const document = parseDocument(text);
+  696:   const previous = assignments(document.lines);
+  697:   const conflicts = (Object.entries(previous) as Array<[ManagedAssignmentKey, PreviousAssignment]>)
+  698:     .filter(([key, assignment]) => assignment.present
+  699:       && !(key === "model_provider" && assignment.value === "openai"))
+  700:     .map(([key, assignment]) => `${key}=${JSON.stringify(assignment.value)}`);
+  701:   if (conflicts.length > 0 && !replaceExistingRoute) {
+  702:     throw new Error(
+  703:       `Codex already configures model routing (${conflicts.join(", ")}). `
+  704:       + "Rerun with --replace-codex-route to replace it reversibly.",
+  705:     );
+  706:   }
+  707: 
+  708:   for (const key of ["model_provider", "model_catalog_json"] as const) {
+  709:     const location = findTopLevelAssignment(document.lines, key);
+  710:     if (location.index !== undefined) removeDocumentLine(document, location.index);
+  711:   }
+  712:   const currentBaseUrl = findTopLevelAssignment(document.lines, "openai_base_url");
+  713:   if (currentBaseUrl.index !== undefined) {
+  714:     document.lines[currentBaseUrl.index] = `openai_base_url = ${JSON.stringify(installedUrl)}`;
+  715:   } else {
+  716:     insertDocumentLine(document, firstTableIndex(document.lines), `openai_base_url = ${JSON.stringify(installedUrl)}`);
+  717:   }
+  718:   removeManagedComment(document);
+  719:   const installedBaseUrl = findTopLevelAssignment(document.lines, "openai_base_url");
+  720:   insertDocumentLine(document, installedBaseUrl.index!, MANAGED_COMMENT);
+  721:   return { text: renderDocument(document), previous };
+  722: }
+  723: 
+  724: function verifyInstalledRoute(text: string, journal: ManagedRouteJournal): void {
+  725:   const lines = splitLines(text);
+  726:   const current = assignments(lines);
+  727:   if (current.openai_base_url.value !== journal.installed.openai_base_url) {
+  728:     throw new Error("Codex openai_base_url changed after setup; refusing to overwrite the user's newer value");
+  729:   }
+  730:   if (current.model_provider.present || current.model_catalog_json.present) {
+  731:     throw new Error("Codex model_provider or model_catalog_json changed after setup; refusing to overwrite the user's newer value");
+  732:   }
+  733:   if (!lines.includes(MANAGED_COMMENT)) {
+  734:     throw new Error("Managed Codex route marker changed after setup; refusing to overwrite it");
+  735:   }
+  736:   if (journal.version === 5 || journal.version === 6) verifyInstalledFeatures(text, journal);
+  737: }
+  738: 
+  739: function previousAssignmentMatches(current: PreviousAssignment, previous: PreviousAssignment): boolean {
+  740:   return current.present === previous.present
+  741:     && (!current.present || current.value === previous.value);
+  742: }
+  743: 
+  744: function verifyRestoredRoute(
+  745:   text: string,
+  746:   journal: CodexIntegrationJournal | LegacyCodexIntegrationJournalV5 | LegacyCodexIntegrationJournalV4,
+  747: ): void {
+  748:   const lines = splitLines(text);
+  749:   const current = assignments(lines);
+  750:   for (const key of ["openai_base_url", "model_provider", "model_catalog_json"] as const) {
+  751:     if (!previousAssignmentMatches(current[key], journal.previous[key])) {
+  752:       throw new Error(`Codex ${key} changed while the bridge was disconnected; refusing to overwrite the user's newer value`);
+  753:     }
+  754:   }
+  755:   if (lines.includes(MANAGED_COMMENT)) {
+  756:     throw new Error("Managed Codex route marker is present while the bridge is disconnected");
+  757:   }
+  758:   if (journal.version === 5 || journal.version === 6) {
+  759:     const previousFeatures: Array<readonly [string, PreviousFeatureAssignment]> = [
+  760:       ["remote_compaction_v2", journal.previousRemoteCompactionV2],
+  761:       ["multi_agent", journal.previousMultiAgent],
+  762:     ];
+  763:     if (journal.version === 6) {
+  764:       previousFeatures.push(["multi_agent_v2", journal.previousMultiAgentV2]);
+  765:     }
+  766:     for (const [key, previous] of previousFeatures) {
+  767:       const current = key === "multi_agent_v2"
+  768:         ? findMultiAgentV2Assignment(lines)
+  769:         : findFeatureAssignment(lines, key);
+  770:       const matches = current.present === previous.present
+  771:         && (current.tableName ?? "features") === (previous.tableName ?? "features")
+  772:         && (!current.present || current.rawLine === previous.rawLine);
+  773:       if (!matches) {
+  774:         throw new Error(
+  775:           `Codex [features].${key} changed while the bridge was disconnected; refusing to overwrite the user's newer value`,
+  776:         );
+  777:       }
+  778:     }
+  779:   }
+  780: }
+  781: 
+  782: function assertPreservedPreviousAssignments(
+  783:   actual: CodexIntegrationJournal["previous"],
+  784:   expected: CodexIntegrationJournal["previous"],
+  785: ): void {
+  786:   for (const key of ["openai_base_url", "model_provider", "model_catalog_json"] as const) {
+  787:     if (!previousAssignmentMatches(actual[key], expected[key])) {
+  788:       throw new Error(`Codex ${key} changed while the bridge was disconnected; refusing to replace it`);
+  789:     }
+  790:   }
+  791: }
+  792: 
+  793: function assertPreservedPreviousFeature(
+  794:   actual: PreviousFeatureAssignment,
+  795:   expected: PreviousFeatureAssignment,
+  796:   key: string,
+  797: ): void {
+  798:   const matches = actual.present === expected.present
+  799:     && (actual.tableName ?? "features") === (expected.tableName ?? "features")
+  800:     && (!actual.present || actual.rawLine === expected.rawLine);
+  801:   if (!matches) {
+  802:     throw new Error(
+  803:       `Codex [features].${key} changed while the bridge was disconnected; refusing to replace it`,
+  804:     );
+  805:   }
+  806: }
+  807: 
+  808: function updateManagedRouteUrl(text: string, journal: ManagedRouteJournal, installedUrl: string): string {
+  809:   verifyInstalledRoute(text, journal);
+  810:   const document = parseDocument(text);
+  811:   const current = findTopLevelAssignment(document.lines, "openai_base_url");
+  812:   if (current.index === undefined) throw new Error("Managed Codex openai_base_url is missing");
+  813:   document.lines[current.index] = `openai_base_url = ${JSON.stringify(installedUrl)}`;
+  814:   return renderDocument(document);
+  815: }
+  816: 
+  817: function restoreManagedRoute(text: string, journal: ManagedRouteJournal): string {
+  818:   verifyInstalledRoute(text, journal);
+  819:   const document = parseDocument(text);
+  820:   removeManagedComment(document);
+  821:   const currentBaseUrl = findTopLevelAssignment(document.lines, "openai_base_url");
+  822:   if (currentBaseUrl.index === undefined) throw new Error("Managed Codex openai_base_url is missing");
+  823:   const previousBaseUrl = journal.previous.openai_base_url;
+  824:   if (previousBaseUrl.present) {
+  825:     if (!previousBaseUrl.rawLine) throw new Error("Codex integration journal is missing the prior openai_base_url line");
+  826:     document.lines[currentBaseUrl.index] = previousBaseUrl.rawLine;
+  827:   } else {
+  828:     removeDocumentLine(document, currentBaseUrl.index);
+  829:   }
+  830:   const removedAssignments = (["model_provider", "model_catalog_json"] as const)
+  831:     .map(key => ({ key, previous: journal.previous[key] }))
+  832:     .filter(item => item.previous.present)
+  833:     .sort((left, right) => (left.previous.index ?? Number.MAX_SAFE_INTEGER) - (right.previous.index ?? Number.MAX_SAFE_INTEGER));
+  834:   for (const item of removedAssignments) {
+  835:     if (!item.previous.rawLine) throw new Error(`Codex integration journal is missing the prior ${item.key} line`);
+  836:     const index = Math.min(item.previous.index ?? firstTableIndex(document.lines), firstTableIndex(document.lines));
+  837:     insertDocumentLine(document, index, item.previous.rawLine);
+  838:   }
+  839:   const restoredRoute = renderDocument(document);
+  840:   return journal.version === 5 || journal.version === 6
+  841:     ? restoreManagedFeatures(restoredRoute, journal)
+  842:     : restoredRoute;
+  843: }
+  844: 
+  845: function restoreLegacyV2(text: string, journal: LegacyCodexIntegrationJournal): string {
+  846:   if (!text.includes(journal.providerBlock)) {
+  847:     throw new Error("Managed legacy Codex provider block changed after setup; refusing migration");
+  848:   }
+  849:   const withoutProvider = text.replace(journal.providerBlock, "").replace(/\n{3,}/g, "\n\n");
+  850:   const document = parseDocument(withoutProvider);
+  851:   for (const key of ["model_provider", "model_catalog_json"] as const) {
+  852:     const current = findTopLevelAssignment(document.lines, key);
+  853:     if (current.value !== journal.installed[key] || current.index === undefined) {
+  854:       throw new Error(`Managed legacy Codex ${key} changed after setup; refusing migration`);
+  855:     }
+  856:     const previous = journal.previous[key];
+  857:     if (previous.present) {
+  858:       if (!previous.rawLine) throw new Error(`Legacy Codex integration journal is missing the prior ${key} line`);
+  859:       document.lines[current.index] = previous.rawLine;
+  860:     } else {
+  861:       removeDocumentLine(document, current.index);
+  862:     }
+  863:   }
+  864:   removeManagedComment(document);
+  865:   const restoredCatalog = findTopLevelAssignment(document.lines, "model_catalog_json");
+  866:   if (restoredCatalog.index !== undefined && restoredCatalog.value && !existsSync(resolve(restoredCatalog.value))) {
+  867:     removeDocumentLine(document, restoredCatalog.index);
+  868:   }
+  869:   return renderDocument(document);
+  870: }
+  871: 
+  872: function readJournal(): AnyCodexIntegrationJournal | undefined {
+  873:   const path = getCodexJournalPath();
+  874:   if (!existsSync(path)) return undefined;
+  875:   const value = JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+  876:   if (value.version === 6
+  877:     && typeof value.active === "boolean"
+  878:     && value.installed
+  879:     && value.previous
+  880:     && value.previousRemoteCompactionV2
+  881:     && value.previousMultiAgent
+  882:     && value.previousMultiAgentV2
+  883:     && typeof value.configPath === "string") {
+  884:     return value as unknown as CodexIntegrationJournal;
+  885:   }
+  886:   if (value.version === 5
+  887:     && typeof value.active === "boolean"
+  888:     && value.installed
+  889:     && value.previous
+  890:     && value.previousRemoteCompactionV2
+  891:     && value.previousMultiAgent
+  892:     && typeof value.configPath === "string") {
+  893:     return value as unknown as LegacyCodexIntegrationJournalV5;
+  894:   }
+  895:   if (value.version === 4
+  896:     && typeof value.active === "boolean"
+  897:     && value.installed
+  898:     && value.previous
+  899:     && typeof value.configPath === "string") {
+  900:     return value as unknown as LegacyCodexIntegrationJournalV4;
+  901:   }
+  902:   if (value.version === 3 && value.installed && value.previous && typeof value.configPath === "string") {
+  903:     return value as unknown as LegacyCodexIntegrationJournalV3;
+  904:   }
+  905:   if (value.version === 2 && value.installed && value.previous && typeof value.providerBlock === "string") {
+  906:     return value as unknown as LegacyCodexIntegrationJournal;
+  907:   }
+  908:   throw new Error(`Invalid Codex integration journal: ${path}`);
+  909: }
+  910: 
+  911: function assertJournalTargetsConfig(
+  912:   journal: AnyCodexIntegrationJournal,
+  913:   configPath: string,
+  914: ): void {
+  915:   const pathIdentity = (value: string): string => {
+  916:     const normalized = resolve(value);
+  917:     return process.platform === "win32" ? normalized.toLowerCase() : normalized;
+  918:   };
+  919:   if (pathIdentity(journal.configPath) !== pathIdentity(configPath)) {
+  920:     throw new Error(
+  921:       `Codex integration journal belongs to ${journal.configPath}, not the active config ${configPath}`,
+  922:     );
+  923:   }
+  924: }
+  925: 
+  926: export function preflightCodexIntegration(
+  927:   config: AppConfig,
+  928:   options: InstallCodexIntegrationOptions = {},
+  929: ): void {
+  930:   const configPath = getCodexConfigPath();
+  931:   const currentText = existsSync(configPath) ? readFileSync(configPath, "utf8") : "";
+  932:   const existing = readJournal();
+  933:   const installedUrl = routeUrl(config);
+  934:   if (existing) assertJournalTargetsConfig(existing, configPath);
+  935:   if (existing?.version === 3 || existing?.version === 4 || existing?.version === 5 || existing?.version === 6) {
+  936:     if ((existing.version === 4 || existing.version === 5 || existing.version === 6) && !existing.active) {
+  937:       verifyRestoredRoute(currentText, existing);
+  938:     }
+  939:     else verifyInstalledRoute(currentText, existing);
+  940:     return;
+  941:   }
+  942:   let baseline = currentText;
+  943:   if (existing?.version === 2) {
+  944:     if (existsSync(existing.catalogPath) && sha256(readFileSync(existing.catalogPath)) !== existing.catalogSha256) {
+  945:       throw new Error(`Managed legacy catalog changed after setup; refusing migration: ${existing.catalogPath}`);
+  946:     }
+  947:     baseline = restoreLegacyV2(currentText, existing);
+  948:   }
+  949:   installIntegrationConfig(baseline, installedUrl, options.replaceExistingRoute === true);
+  950: }
+  951: 
+  952: export function installCodexIntegration(
+  953:   config: AppConfig,
+  954:   options: InstallCodexIntegrationOptions = {},
+  955: ): CodexIntegrationJournal {
+  956:   const configPath = getCodexConfigPath();
+  957:   mkdirSync(dirname(configPath), { recursive: true, mode: 0o700 });
+  958:   const currentText = existsSync(configPath) ? readFileSync(configPath, "utf8") : "";
+  959:   const existing = readJournal();
+  960:   const installedUrl = routeUrl(config);
+  961:   if (existing) assertJournalTargetsConfig(existing, configPath);
+  962: 
+  963:   if (existing?.version === 6) {
+  964:     let installedText: string;
+  965:     let previousRemoteCompactionV2 = existing.previousRemoteCompactionV2;
+  966:     let previousMultiAgent = existing.previousMultiAgent;
+  967:     let previousMultiAgentV2 = existing.previousMultiAgentV2;
+  968:     if (!existing.active) {
+  969:       verifyRestoredRoute(currentText, existing);
+  970:       const patched = installIntegrationConfig(currentText, installedUrl, true);
+  971:       assertPreservedPreviousAssignments(patched.previous, existing.previous);
+  972:       assertPreservedPreviousFeature(
+  973:         patched.previousRemoteCompactionV2,
+  974:         existing.previousRemoteCompactionV2,
+  975:         "remote_compaction_v2",
+  976:       );
+  977:       assertPreservedPreviousFeature(
+  978:         patched.previousMultiAgent,
+  979:         existing.previousMultiAgent,
+  980:         "multi_agent",
+  981:       );
+  982:       assertPreservedPreviousFeature(
+  983:         patched.previousMultiAgentV2,
+  984:         existing.previousMultiAgentV2,
+  985:         "multi_agent_v2",
+  986:       );
+  987:       installedText = patched.text;
+  988:       // Preserve unrelated [features] edits made while disconnected by remembering whether the
+  989:       // table itself now belongs to the user's baseline.
+  990:       previousRemoteCompactionV2 = patched.previousRemoteCompactionV2;
+  991:       previousMultiAgent = patched.previousMultiAgent;
+  992:       previousMultiAgentV2 = patched.previousMultiAgentV2;
+  993:     } else {
+  994:       installedText = updateManagedRouteUrl(currentText, existing, installedUrl);
+  995:     }
+  996:     const updated: CodexIntegrationJournal = {
+  997:       ...existing,
+  998:       active: true,
+  999:       installed: {
+ 1000:         openai_base_url: installedUrl,
+ 1001:         remote_compaction_v2: false,
+ 1002:         multi_agent: true,
+ 1003:         multi_agent_v2: false,
+ 1004:       },
+ 1005:       previousRemoteCompactionV2,
+ 1006:       previousMultiAgent,
+ 1007:       previousMultiAgentV2,
+ 1008:     };
+ 1009:     writeFilesWithCompensation([
+ 1010:       { path: configPath, data: installedText },
+ 1011:       { path: getCodexJournalPath(), data: `${JSON.stringify(updated, null, 2)}\n` },
+ 1012:     ], [getCodexModelsCachePath()]);
+ 1013:     return updated;
+ 1014:   }
+ 1015: 
+ 1016:   if (existing?.version === 5) {
+ 1017:     let installedText: string;
+ 1018:     let previousRemoteCompactionV2 = existing.previousRemoteCompactionV2;
+ 1019:     let previousMultiAgent = existing.previousMultiAgent;
+ 1020:     let previousMultiAgentV2: PreviousFeatureAssignment;
+ 1021:     if (!existing.active) {
+ 1022:       verifyRestoredRoute(currentText, existing);
+ 1023:       const patched = installIntegrationConfig(currentText, installedUrl, true);
+ 1024:       assertPreservedPreviousAssignments(patched.previous, existing.previous);
+ 1025:       assertPreservedPreviousFeature(
+ 1026:         patched.previousRemoteCompactionV2,
+ 1027:         existing.previousRemoteCompactionV2,
+ 1028:         "remote_compaction_v2",
+ 1029:       );
+ 1030:       assertPreservedPreviousFeature(
+ 1031:         patched.previousMultiAgent,
+ 1032:         existing.previousMultiAgent,
+ 1033:         "multi_agent",
+ 1034:       );
+ 1035:       installedText = patched.text;
+ 1036:       previousRemoteCompactionV2 = patched.previousRemoteCompactionV2;
+ 1037:       previousMultiAgent = patched.previousMultiAgent;
+ 1038:       previousMultiAgentV2 = patched.previousMultiAgentV2;
+ 1039:     } else {
+ 1040:       const routedText = updateManagedRouteUrl(currentText, existing, installedUrl);
+ 1041:       const multiAgentV2 = installMultiAgentV2Feature(routedText);
+ 1042:       installedText = multiAgentV2.text;
+ 1043:       previousMultiAgentV2 = multiAgentV2.previous;
+ 1044:     }
+ 1045:     const updated: CodexIntegrationJournal = {
+ 1046:       version: 6,
+ 1047:       active: true,
+ 1048:       configPath: existing.configPath,
+ 1049:       installed: {
+ 1050:         openai_base_url: installedUrl,
+ 1051:         remote_compaction_v2: false,
+ 1052:         multi_agent: true,
+ 1053:         multi_agent_v2: false,
+ 1054:       },
+ 1055:       previous: existing.previous,
+ 1056:       previousRemoteCompactionV2,
+ 1057:       previousMultiAgent,
+ 1058:       previousMultiAgentV2,
+ 1059:       ...(existing.format ? { format: existing.format } : {}),
+ 1060:     };
+ 1061:     writeFilesWithCompensation([
+ 1062:       { path: configPath, data: installedText },
+ 1063:       { path: getCodexJournalPath(), data: `${JSON.stringify(updated, null, 2)}\n` },
+ 1064:     ], [getCodexModelsCachePath()]);
+ 1065:     return updated;
+ 1066:   }
+ 1067: 
+ 1068:   if (existing?.version === 3 || existing?.version === 4) {
+ 1069:     let routedText: string;
+ 1070:     if (existing.version === 4 && !existing.active) {
+ 1071:       verifyRestoredRoute(currentText, existing);
+ 1072:       const patched = installRoute(currentText, installedUrl, true);
+ 1073:       assertPreservedPreviousAssignments(patched.previous, existing.previous);
+ 1074:       routedText = patched.text;
+ 1075:     } else {
+ 1076:       routedText = updateManagedRouteUrl(currentText, existing, installedUrl);
+ 1077:     }
+ 1078:     const features = installManagedFeatures(routedText);
+ 1079:     const updated: CodexIntegrationJournal = {
+ 1080:       version: 6,
+ 1081:       active: true,
+ 1082:       configPath: existing.configPath,
+ 1083:       installed: {
+ 1084:         openai_base_url: installedUrl,
+ 1085:         remote_compaction_v2: false,
+ 1086:         multi_agent: true,
+ 1087:         multi_agent_v2: false,
+ 1088:       },
+ 1089:       previous: existing.previous,
+ 1090:       previousRemoteCompactionV2: features.previousRemoteCompactionV2,
+ 1091:       previousMultiAgent: features.previousMultiAgent,
+ 1092:       previousMultiAgentV2: features.previousMultiAgentV2,
+ 1093:       ...(existing.format ? { format: existing.format } : {}),
+ 1094:     };
+ 1095:     writeFilesWithCompensation([
+ 1096:       { path: configPath, data: features.text },
+ 1097:       { path: getCodexJournalPath(), data: `${JSON.stringify(updated, null, 2)}\n` },
+ 1098:     ], [getCodexModelsCachePath()]);
+ 1099:     return updated;
+ 1100:   }
+ 1101: 
+ 1102:   let baseline = currentText;
+ 1103:   if (existing?.version === 2) {
+ 1104:     if (existsSync(existing.catalogPath) && sha256(readFileSync(existing.catalogPath)) !== existing.catalogSha256) {
+ 1105:       throw new Error(`Managed legacy catalog changed after setup; refusing migration: ${existing.catalogPath}`);
+ 1106:     }
+ 1107:     baseline = restoreLegacyV2(currentText, existing);
+ 1108:   }
+ 1109:   const patched = installIntegrationConfig(baseline, installedUrl, options.replaceExistingRoute === true);
+ 1110:   const journal: CodexIntegrationJournal = {
+ 1111:     version: 6,
+ 1112:     active: true,
+ 1113:     configPath,
+ 1114:     installed: {
+ 1115:       openai_base_url: installedUrl,
+ 1116:       remote_compaction_v2: false,
+ 1117:       multi_agent: true,
+ 1118:       multi_agent_v2: false,
+ 1119:     },
+ 1120:     previous: patched.previous,
+ 1121:     previousRemoteCompactionV2: patched.previousRemoteCompactionV2,
+ 1122:     previousMultiAgent: patched.previousMultiAgent,
+ 1123:     previousMultiAgentV2: patched.previousMultiAgentV2,
+ 1124:     format: textFormat(baseline),
+ 1125:   };
+ 1126:   writeFilesWithCompensation([
+ 1127:     { path: configPath, data: patched.text },
+ 1128:     { path: getCodexJournalPath(), data: `${JSON.stringify(journal, null, 2)}\n` },
+ 1129:   ], [getCodexModelsCachePath()]);
+ 1130:   if (existing?.version === 2 && existsSync(existing.catalogPath)) rmSync(existing.catalogPath);
+ 1131:   return journal;
+ 1132: }
+ 1133: 
+ 1134: export function deactivateCodexIntegration(): SetCodexIntegrationActiveResult {
+ 1135:   const existing = readJournal();
+ 1136:   if (!existing) return { changed: false, active: false };
+ 1137:   if (existing.version === 2) {
+ 1138:     throw new Error("Legacy Codex integration must be upgraded by Setup before the bridge can be disconnected");
+ 1139:   }
+ 1140:   assertJournalTargetsConfig(existing, getCodexConfigPath());
+ 1141:   if (!existsSync(existing.configPath)) throw new Error(`Codex config is missing: ${existing.configPath}`);
+ 1142:   const current = readFileSync(existing.configPath, "utf8");
+ 1143:   if ((existing.version === 4 || existing.version === 5 || existing.version === 6) && !existing.active) {
+ 1144:     verifyRestoredRoute(current, existing);
+ 1145:     return { changed: false, active: false };
+ 1146:   }
+ 1147:   const restored = restoreManagedRoute(current, existing);
+ 1148:   const disconnected:
+ 1149:     | CodexIntegrationJournal
+ 1150:     | LegacyCodexIntegrationJournalV5
+ 1151:     | LegacyCodexIntegrationJournalV4 = existing.version === 6 || existing.version === 5
+ 1152:       ? { ...existing, active: false }
+ 1153:       : { ...existing, version: 4, active: false };
+ 1154:   writeFilesWithCompensation([
+ 1155:     { path: existing.configPath, data: restored },
+ 1156:     { path: getCodexJournalPath(), data: `${JSON.stringify(disconnected, null, 2)}\n` },
+ 1157:   ], [getCodexModelsCachePath()]);
+ 1158:   return { changed: true, active: false };
+ 1159: }
+ 1160: 
+ 1161: export function activateCodexIntegration(): SetCodexIntegrationActiveResult {
+ 1162:   const existing = readJournal();
+ 1163:   if (!existing) throw new Error("Codex integration is not installed");
+ 1164:   if (existing.version === 2) {
+ 1165:     throw new Error("Legacy Codex integration must be upgraded by Setup before the bridge can be reconnected");
+ 1166:   }
+ 1167:   assertJournalTargetsConfig(existing, getCodexConfigPath());
+ 1168:   if (!existsSync(existing.configPath)) throw new Error(`Codex config is missing: ${existing.configPath}`);
+ 1169:   const current = readFileSync(existing.configPath, "utf8");
+ 1170:   if (existing.version === 6 && existing.active) {
+ 1171:     verifyInstalledRoute(current, existing);
+ 1172:     return { changed: false, active: true };
+ 1173:   }
+ 1174:   if (existing.version === 5 && existing.active) {
+ 1175:     verifyInstalledRoute(current, existing);
+ 1176:     const multiAgentV2 = installMultiAgentV2Feature(current);
+ 1177:     const connected: CodexIntegrationJournal = {
+ 1178:       version: 6,
+ 1179:       active: true,
+ 1180:       configPath: existing.configPath,
+ 1181:       installed: {
+ 1182:         openai_base_url: existing.installed.openai_base_url,
+ 1183:         remote_compaction_v2: false,
+ 1184:         multi_agent: true,
+ 1185:         multi_agent_v2: false,
+ 1186:       },
+ 1187:       previous: existing.previous,
+ 1188:       previousRemoteCompactionV2: existing.previousRemoteCompactionV2,
+ 1189:       previousMultiAgent: existing.previousMultiAgent,
+ 1190:       previousMultiAgentV2: multiAgentV2.previous,
+ 1191:       ...(existing.format ? { format: existing.format } : {}),
+ 1192:     };
+ 1193:     writeFilesWithCompensation([
+ 1194:       { path: existing.configPath, data: multiAgentV2.text },
+ 1195:       { path: getCodexJournalPath(), data: `${JSON.stringify(connected, null, 2)}\n` },
+ 1196:     ], [getCodexModelsCachePath()]);
+ 1197:     return { changed: true, active: true };
+ 1198:   }
+ 1199:   let routedText: string;
+ 1200:   if ((existing.version === 4 || existing.version === 5 || existing.version === 6) && !existing.active) {
+ 1201:     verifyRestoredRoute(current, existing);
+ 1202:     const patched = installRoute(current, existing.installed.openai_base_url, true);
+ 1203:     assertPreservedPreviousAssignments(patched.previous, existing.previous);
+ 1204:     routedText = patched.text;
+ 1205:   } else {
+ 1206:     verifyInstalledRoute(current, existing);
+ 1207:     routedText = current;
+ 1208:   }
+ 1209:   const features = installManagedFeatures(routedText);
+ 1210:   if (existing.version === 5 || existing.version === 6) {
+ 1211:     assertPreservedPreviousFeature(
+ 1212:       features.previousRemoteCompactionV2,
+ 1213:       existing.previousRemoteCompactionV2,
+ 1214:       "remote_compaction_v2",
+ 1215:     );
+ 1216:     assertPreservedPreviousFeature(
+ 1217:       features.previousMultiAgent,
+ 1218:       existing.previousMultiAgent,
+ 1219:       "multi_agent",
+ 1220:     );
+ 1221:     if (existing.version === 6) {
+ 1222:       assertPreservedPreviousFeature(
+ 1223:         features.previousMultiAgentV2,
+ 1224:         existing.previousMultiAgentV2,
+ 1225:         "multi_agent_v2",
+ 1226:       );
+ 1227:     }
+ 1228:   }
+ 1229:   const connected: CodexIntegrationJournal = {
+ 1230:     version: 6,
+ 1231:     active: true,
+ 1232:     configPath: existing.configPath,
+ 1233:     installed: {
+ 1234:       openai_base_url: existing.installed.openai_base_url,
+ 1235:       remote_compaction_v2: false,
+ 1236:       multi_agent: true,
+ 1237:       multi_agent_v2: false,
+ 1238:     },
+ 1239:     previous: existing.previous,
+ 1240:     previousRemoteCompactionV2: features.previousRemoteCompactionV2,
+ 1241:     previousMultiAgent: features.previousMultiAgent,
+ 1242:     previousMultiAgentV2: features.previousMultiAgentV2,
+ 1243:     ...(existing.format ? { format: existing.format } : {}),
+ 1244:   };
+ 1245:   writeFilesWithCompensation([
+ 1246:     { path: existing.configPath, data: features.text },
+ 1247:     { path: getCodexJournalPath(), data: `${JSON.stringify(connected, null, 2)}\n` },
+ 1248:   ], [getCodexModelsCachePath()]);
+ 1249:   return { changed: true, active: true };
+ 1250: }
+ 1251: 
+ 1252: export function uninstallCodexIntegration(): UninstallCodexIntegrationResult {
+ 1253:   const journal = readJournal();
+ 1254:   if (!journal) return { changed: false };
+ 1255:   if (!existsSync(journal.configPath)) throw new Error(`Codex config is missing: ${journal.configPath}`);
+ 1256:   const current = readFileSync(journal.configPath, "utf8");
+ 1257:   let restored: string;
+ 1258:   if (journal.version === 2) {
+ 1259:     if (existsSync(journal.catalogPath) && sha256(readFileSync(journal.catalogPath)) !== journal.catalogSha256) {
+ 1260:       throw new Error(`Managed legacy catalog changed after setup: ${journal.catalogPath}`);
+ 1261:     }
+ 1262:     restored = restoreLegacyV2(current, journal);
+ 1263:   } else if ((journal.version === 4 || journal.version === 5 || journal.version === 6) && !journal.active) {
+ 1264:     verifyRestoredRoute(current, journal);
+ 1265:     restored = current;
+ 1266:   } else {
+ 1267:     restored = restoreManagedRoute(current, journal);
+ 1268:   }
+ 1269:   const configSnapshot = snapshotFile(journal.configPath);
+ 1270:   const catalogSnapshot = journal.version === 2 ? snapshotFile(journal.catalogPath) : undefined;
+ 1271:   const modelsCacheSnapshot = snapshotFile(getCodexModelsCachePath());
+ 1272:   try {
+ 1273:     atomicWriteFile(journal.configPath, restored);
+ 1274:     if (catalogSnapshot?.exists) rmSync(catalogSnapshot.path);
+ 1275:     rmSync(modelsCacheSnapshot.path, { force: true });
+ 1276:     rmSync(getCodexJournalPath(), { force: true });
+ 1277:   } catch (error) {
+ 1278:     const rollbackFailures: string[] = [];
+ 1279:     for (const snapshot of [modelsCacheSnapshot, catalogSnapshot, configSnapshot]) {
+ 1280:       if (!snapshot) continue;
+ 1281:       try {
+ 1282:         restoreFileSnapshot(snapshot);
+ 1283:       } catch (caught) {
+ 1284:         rollbackFailures.push(`${snapshot.path}: ${caught instanceof Error ? caught.message : String(caught)}`);
+ 1285:       }
+ 1286:     }
+ 1287:     const primary = error instanceof Error ? error.message : String(error);
+ 1288:     throw new Error(rollbackFailures.length > 0
+ 1289:       ? `${primary}; Codex integration rollback also failed: ${rollbackFailures.join("; ")}`
+ 1290:       : primary);
+ 1291:   }
+ 1292:   return { changed: true };
+ 1293: }
+ 1294: 
+ 1295: export function inspectCodexIntegration(): {
+ 1296:   installed: boolean;
+ 1297:   active: boolean;
+ 1298:   configPath: string;
+ 1299:   routeUrl?: string;
+ 1300:   journal?: AnyCodexIntegrationJournal;
+ 1301:   errors: string[];
+ 1302: } {
+ 1303:   const journal = readJournal();
+ 1304:   const errors: string[] = [];
+ 1305:   if (journal) {
+ 1306:     try {
+ 1307:       assertJournalTargetsConfig(journal, getCodexConfigPath());
+ 1308:       const text = readFileSync(journal.configPath, "utf8");
+ 1309:       if ((journal.version === 4 || journal.version === 5 || journal.version === 6) && !journal.active) {
+ 1310:         verifyRestoredRoute(text, journal);
+ 1311:       }
+ 1312:       else if (journal.version === 3 || journal.version === 4 || journal.version === 5 || journal.version === 6) {
+ 1313:         verifyInstalledRoute(text, journal);
+ 1314:       }
+ 1315:       else {
+ 1316:         const lines = splitLines(text);
+ 1317:         for (const key of ["model_provider", "model_catalog_json"] as const) {
+ 1318:           if (findTopLevelAssignment(lines, key).value !== journal.installed[key]) {
+ 1319:             errors.push(`Codex ${key} no longer matches this installation`);
+ 1320:           }
+ 1321:         }
+ 1322:         if (!text.includes(journal.providerBlock)) errors.push("Managed legacy Codex provider block no longer matches this installation");
+ 1323:       }
+ 1324:     } catch (error) {
+ 1325:       errors.push(error instanceof Error ? error.message : String(error));
+ 1326:     }
+ 1327:   }
+ 1328:   return {
+ 1329:     installed: Boolean(journal),
+ 1330:     active: journal?.version === 4 || journal?.version === 5 || journal?.version === 6
+ 1331:       ? journal.active
+ 1332:       : Boolean(journal),
+ 1333:     configPath: getCodexConfigPath(),
+ 1334:     ...(journal?.version === 3 || journal?.version === 4 || journal?.version === 5 || journal?.version === 6
+ 1335:       ? { routeUrl: journal.installed.openai_base_url }
+ 1336:       : {}),
+ 1337:     ...(journal ? { journal } : {}),
+ 1338:     errors,
+ 1339:   };
+ 1340: }
+
+============================================================
+FILE: tests\codex-integration.test.ts
+============================================================
+    1: import { afterEach, describe, expect, test } from "bun:test";
+    2: import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+    3: import { homedir, tmpdir } from "node:os";
+    4: import { join } from "node:path";
+    5: import {
+    6:   activateCodexIntegration,
+    7:   deactivateCodexIntegration,
+    8:   getCodexHome,
+    9:   getCodexJournalPath,
+   10:   getCodexModelsCachePath,
+   11:   installCodexIntegration,
+   12:   inspectCodexIntegration,
+   13:   preflightCodexIntegration,
+   14:   readCodexModelContextOverride,
+   15:   uninstallCodexIntegration,
+   16: } from "../src/codex-integration";
+   17: import { defaultConfig } from "../src/config";
+   18: 
+   19: const roots: string[] = [];
+   20: 
+   21: function fixture(): { root: string; codexHome: string; appHome: string } {
+   22:   const root = join(tmpdir(), `codex-chatgpt-web-integration-${process.pid}-${Date.now()}-${Math.random()}`);
+   23:   const codexHome = join(root, "codex");
+   24:   const appHome = join(root, "app");
+   25:   mkdirSync(codexHome, { recursive: true });
+   26:   roots.push(root);
+   27:   process.env.CODEX_HOME = codexHome;
+   28:   process.env.CODEX_CHATGPT_WEB_HOME = appHome;
+   29:   return { root, codexHome, appHome };
+   30: }
+   31: 
+   32: afterEach(() => {
+   33:   delete process.env.CODEX_HOME;
+   34:   delete process.env.CODEX_CHATGPT_WEB_HOME;
+   35:   for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
+   36: });
+   37: 
+   38: describe("reversible native Codex route integration", () => {
+   39:   test("expands a configured tilde Codex home consistently with launcher paths", () => {
+   40:     process.env.CODEX_HOME = "~/custom-codex-home";
+   41:     expect(getCodexHome()).toBe(join(homedir(), "custom-codex-home"));
+   42:   });
+   43: 
+   44:   test("reads the selected model's explicit context override from Codex config", () => {
+   45:     const { codexHome } = fixture();
+   46:     writeFileSync(
+   47:       join(codexHome, "config.toml"),
+   48:       'model = "gpt-5.6-sol"\nmodel_context_window = 371_851 # explicit override\n',
+   49:     );
+   50: 
+   51:     expect(readCodexModelContextOverride()).toEqual({
+   52:       model: "gpt-5.6-sol",
+   53:       contextWindow: 371_851,
+   54:     });
+   55:   });
+   56: 
+   57:   test("keeps the built-in openai provider and manages the bounded V1 Web surface", () => {
+   58:     const { codexHome } = fixture();
+   59:     const configPath = join(codexHome, "config.toml");
+   60:     const original = `model = "gpt-5.6-sol"\n\n[features]\nmulti_agent = false # user choice\ngoals = true\n`;
+   61:     writeFileSync(configPath, original);
+   62: 
+   63:     const journal = installCodexIntegration(defaultConfig("browser-only"));
+   64:     const installed = readFileSync(configPath, "utf8");
+   65:     expect(journal.version).toBe(6);
+   66:     expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+   67:     expect(installed).toContain("remote_compaction_v2 = false # Managed by codex-chatgpt-web");
+   68:     expect(installed).toContain("multi_agent = true # Managed by codex-chatgpt-web");
+   69:     expect(installed).toContain("multi_agent_v2 = false # Managed by codex-chatgpt-web");
+   70:     expect(installed).not.toContain("multi_agent = false");
+   71:     expect(installed).toContain("goals = true");
+   72:     expect(installed).not.toMatch(/^\s*model_provider\s*=/m);
+   73:     expect(installed).not.toMatch(/^\s*model_catalog_json\s*=/m);
+   74:     expect(installed).not.toContain("[model_providers.codex-chatgpt-web]");
+   75: 
+   76:     expect(uninstallCodexIntegration()).toEqual({ changed: true });
+   77:     expect(readFileSync(configPath, "utf8")).toBe(original);
+   78:     expect(uninstallCodexIntegration()).toEqual({ changed: false });
+   79:   });
+   80: 
+   81:   test("accepts an explicitly persisted built-in openai provider and restores it exactly", () => {
+   82:     const { codexHome } = fixture();
+   83:     const configPath = join(codexHome, "config.toml");
+   84:     const original = 'model = "gpt-5.6-sol"\nmodel_provider = "openai" # explicit built-in default\n';
+   85:     writeFileSync(configPath, original);
+   86: 
+   87:     expect(() => preflightCodexIntegration(defaultConfig("browser-only"))).not.toThrow();
+   88:     installCodexIntegration(defaultConfig("browser-only"));
+   89:     expect(readFileSync(configPath, "utf8")).not.toMatch(/^\s*model_provider\s*=/m);
+   90: 
+   91:     uninstallCodexIntegration();
+   92:     expect(readFileSync(configPath, "utf8")).toBe(original);
+   93:   });
+   94: 
+   95:   test("restores an explicit remote_compaction_v2 setting byte-for-byte", () => {
+   96:     const { codexHome } = fixture();
+   97:     const configPath = join(codexHome, "config.toml");
+   98:     const original = 'model = "gpt-5.6-sol"\n\n[features]\nremote_compaction_v2 = true # user choice\ngoals = true\n';
+   99:     writeFileSync(configPath, original);
+  100: 
+  101:     installCodexIntegration(defaultConfig("browser-only"));
+  102:     const installed = readFileSync(configPath, "utf8");
+  103:     expect(installed).toContain("remote_compaction_v2 = false # Managed by codex-chatgpt-web");
+  104:     expect(installed).not.toContain("remote_compaction_v2 = true");
+  105: 
+  106:     uninstallCodexIntegration();
+  107:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  108:   });
+  109: 
+  110:   test("restores an explicit multi_agent setting byte-for-byte", () => {
+  111:     const { codexHome } = fixture();
+  112:     const configPath = join(codexHome, "config.toml");
+  113:     const original = 'model = "gpt-5.6-sol"\n\n[features]\nmulti_agent = false # user choice\ngoals = true\n';
+  114:     writeFileSync(configPath, original);
+  115: 
+  116:     installCodexIntegration(defaultConfig("full"));
+  117:     const installed = readFileSync(configPath, "utf8");
+  118:     expect(installed).toContain("multi_agent = true # Managed by codex-chatgpt-web");
+  119:     expect(installed).not.toContain("multi_agent = false");
+  120: 
+  121:     uninstallCodexIntegration();
+  122:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  123:   });
+  124: 
+  125:   test("restores an explicit multi_agent_v2 setting byte-for-byte", () => {
+  126:     const { codexHome } = fixture();
+  127:     const configPath = join(codexHome, "config.toml");
+  128:     const original = 'model = "gpt-5.6-sol"\n\n[features]\nmulti_agent_v2 = true # user choice\ngoals = true\n';
+  129:     writeFileSync(configPath, original);
+  130: 
+  131:     installCodexIntegration(defaultConfig("full"));
+  132:     const installed = readFileSync(configPath, "utf8");
+  133:     expect(installed).toContain("multi_agent_v2 = false # Managed by codex-chatgpt-web");
+  134:     expect(installed).not.toContain("multi_agent_v2 = true");
+  135: 
+  136:     uninstallCodexIntegration();
+  137:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  138:   });
+  139: 
+  140:   test("manages and restores the structured multi_agent_v2 feature table", () => {
+  141:     const { codexHome } = fixture();
+  142:     const configPath = join(codexHome, "config.toml");
+  143:     const original = [
+  144:       'model = "gpt-5.6-sol"',
+  145:       "",
+  146:       "[features]",
+  147:       "multi_agent = true",
+  148:       "",
+  149:       "[features.multi_agent_v2]",
+  150:       "enabled = true # user choice",
+  151:       "hide_spawn_agent_metadata = true",
+  152:       "",
+  153:     ].join("\n");
+  154:     writeFileSync(configPath, original);
+  155: 
+  156:     installCodexIntegration(defaultConfig("full"));
+  157:     const installed = readFileSync(configPath, "utf8");
+  158:     expect(installed).not.toMatch(/^multi_agent_v2\s*=/m);
+  159:     expect(installed).toContain(
+  160:       "enabled = false # Managed by codex-chatgpt-web: keeps routed Web subagent payloads readable.",
+  161:     );
+  162:     expect(installed).toContain("hide_spawn_agent_metadata = true");
+  163: 
+  164:     uninstallCodexIntegration();
+  165:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  166:   });
+  167: 
+  168:   test("invalidates Codex's provider-agnostic model cache on install and uninstall", () => {
+  169:     const { codexHome } = fixture();
+  170:     const configPath = join(codexHome, "config.toml");
+  171:     const cachePath = getCodexModelsCachePath();
+  172:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  173:     writeFileSync(cachePath, '{"models":["native-only"]}\n');
+  174: 
+  175:     installCodexIntegration(defaultConfig("browser-only"));
+  176:     expect(() => readFileSync(cachePath, "utf8")).toThrow();
+  177: 
+  178:     writeFileSync(cachePath, '{"models":["native-and-web"]}\n');
+  179:     uninstallCodexIntegration();
+  180:     expect(() => readFileSync(cachePath, "utf8")).toThrow();
+  181:   });
+  182: 
+  183:   test("requires explicit replacement and restores every prior route assignment", () => {
+  184:     const { codexHome } = fixture();
+  185:     const configPath = join(codexHome, "config.toml");
+  186:     const original = `model = "gpt-5.6-sol"\nmodel_provider = "existing-provider"\nopenai_base_url = "http://127.0.0.1:9999/v1"\nmodel_catalog_json = "/tmp/native.json"\n\n[features]\ngoals = true\n`;
+  187:     writeFileSync(configPath, original);
+  188:     const config = defaultConfig("full");
+  189: 
+  190:     expect(() => installCodexIntegration(config)).toThrow("--replace-codex-route");
+  191:     installCodexIntegration(config, { replaceExistingRoute: true });
+  192:     const installed = readFileSync(configPath, "utf8");
+  193:     expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+  194:     expect(installed).not.toMatch(/^\s*model_provider\s*=/m);
+  195:     expect(installed).not.toMatch(/^\s*model_catalog_json\s*=/m);
+  196: 
+  197:     uninstallCodexIntegration();
+  198:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  199:   });
+  200: 
+  201:   test("preflight detects route conflicts without changing Codex or creating a journal", () => {
+  202:     const { codexHome } = fixture();
+  203:     const configPath = join(codexHome, "config.toml");
+  204:     const original = 'model = "gpt-5.6-sol"\nopenai_base_url = "http://127.0.0.1:9999/v1"\n';
+  205:     writeFileSync(configPath, original);
+  206: 
+  207:     expect(() => preflightCodexIntegration(defaultConfig("browser-only")))
+  208:       .toThrow("--replace-codex-route");
+  209:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  210:     expect(() => readFileSync(getCodexJournalPath(), "utf8")).toThrow();
+  211:   });
+  212: 
+  213:   test("updates its own route idempotently without changing the preserved baseline", () => {
+  214:     const { codexHome } = fixture();
+  215:     const configPath = join(codexHome, "config.toml");
+  216:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  217:     const first = defaultConfig("browser-only");
+  218:     installCodexIntegration(first);
+  219:     const second = defaultConfig("browser-only");
+  220:     second.port = 17842;
+  221:     installCodexIntegration(second);
+  222:     expect(readFileSync(configPath, "utf8")).toContain('openai_base_url = "http://127.0.0.1:17842/v1"');
+  223:     uninstallCodexIntegration();
+  224:     expect(readFileSync(configPath, "utf8")).toBe('model = "gpt-5.6-sol"\n');
+  225:   });
+  226: 
+  227:   test("disconnects and reconnects the bridge without losing the prior route or journal", () => {
+  228:     const { codexHome } = fixture();
+  229:     const configPath = join(codexHome, "config.toml");
+  230:     const original = 'model = "gpt-5.6-sol"\napproval_policy = "never"\nopenai_base_url = "https://native.example/v1"\n';
+  231:     writeFileSync(configPath, original);
+  232: 
+  233:     installCodexIntegration(defaultConfig("browser-only"), { replaceExistingRoute: true });
+  234:     expect(deactivateCodexIntegration()).toEqual({ changed: true, active: false });
+  235:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  236:     expect(inspectCodexIntegration()).toMatchObject({ installed: true, active: false });
+  237:     expect(deactivateCodexIntegration()).toEqual({ changed: false, active: false });
+  238: 
+  239:     expect(activateCodexIntegration()).toEqual({ changed: true, active: true });
+  240:     const reconnected = readFileSync(configPath, "utf8");
+  241:     expect(reconnected).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+  242:     expect(reconnected).toContain("remote_compaction_v2 = false # Managed by codex-chatgpt-web");
+  243:     expect(reconnected).toContain("multi_agent = true # Managed by codex-chatgpt-web");
+  244:     expect(reconnected).toContain("multi_agent_v2 = false # Managed by codex-chatgpt-web");
+  245:     expect(reconnected).toContain('approval_policy = "never"');
+  246:     expect(inspectCodexIntegration()).toMatchObject({ installed: true, active: true });
+  247:     expect(activateCodexIntegration()).toEqual({ changed: false, active: true });
+  248: 
+  249:     uninstallCodexIntegration();
+  250:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  251:   });
+  252: 
+  253:   test("keeps a disconnected bridge disabled across process-style journal reloads", () => {
+  254:     const { codexHome } = fixture();
+  255:     const configPath = join(codexHome, "config.toml");
+  256:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  257:     installCodexIntegration(defaultConfig("browser-only"));
+  258:     deactivateCodexIntegration();
+  259: 
+  260:     expect(JSON.parse(readFileSync(getCodexJournalPath(), "utf8"))).toMatchObject({
+  261:       version: 6,
+  262:       active: false,
+  263:     });
+  264:     expect(inspectCodexIntegration()).toMatchObject({ installed: true, active: false, errors: [] });
+  265:     expect(readFileSync(configPath, "utf8")).toBe('model = "gpt-5.6-sol"\n');
+  266:   });
+  267: 
+  268:   test("upgrades an existing v3 route journal when it is disconnected for the first time", () => {
+  269:     const { codexHome } = fixture();
+  270:     const configPath = join(codexHome, "config.toml");
+  271:     const original = 'model = "gpt-5.6-sol"\n\n[features]\ngoals = true\n';
+  272:     writeFileSync(configPath, original);
+  273:     installCodexIntegration(defaultConfig("browser-only"));
+  274:     const previous = JSON.parse(readFileSync(getCodexJournalPath(), "utf8"));
+  275:     const legacyInstalled = readFileSync(configPath, "utf8")
+  276:       .replace(/^(?:remote_compaction_v2 = false|multi_agent = true|multi_agent_v2 = false).*\n/gm, "");
+  277:     writeFileSync(configPath, legacyInstalled);
+  278:     delete previous.active;
+  279:     delete previous.previousRemoteCompactionV2;
+  280:     delete previous.previousMultiAgent;
+  281:     delete previous.previousMultiAgentV2;
+  282:     delete previous.installed.remote_compaction_v2;
+  283:     delete previous.installed.multi_agent;
+  284:     delete previous.installed.multi_agent_v2;
+  285:     previous.version = 3;
+  286:     writeFileSync(getCodexJournalPath(), `${JSON.stringify(previous, null, 2)}\n`);
+  287: 
+  288:     expect(deactivateCodexIntegration()).toEqual({ changed: true, active: false });
+  289:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  290:     expect(JSON.parse(readFileSync(getCodexJournalPath(), "utf8"))).toMatchObject({
+  291:       version: 4,
+  292:       active: false,
+  293:     });
+  294:   });
+  295: 
+  296:   test("upgrades an active v4 route journal to the managed V1 Web surface", () => {
+  297:     const { codexHome } = fixture();
+  298:     const configPath = join(codexHome, "config.toml");
+  299:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n\n[features]\ngoals = true\n');
+  300:     installCodexIntegration(defaultConfig("browser-only"));
+  301:     const legacy = JSON.parse(readFileSync(getCodexJournalPath(), "utf8"));
+  302:     delete legacy.previousRemoteCompactionV2;
+  303:     delete legacy.previousMultiAgent;
+  304:     delete legacy.previousMultiAgentV2;
+  305:     delete legacy.installed.remote_compaction_v2;
+  306:     delete legacy.installed.multi_agent;
+  307:     delete legacy.installed.multi_agent_v2;
+  308:     legacy.version = 4;
+  309:     writeFileSync(getCodexJournalPath(), `${JSON.stringify(legacy, null, 2)}\n`);
+  310:     writeFileSync(
+  311:       configPath,
+  312:       readFileSync(configPath, "utf8")
+  313:         .replace(/^(?:remote_compaction_v2 = false|multi_agent = true|multi_agent_v2 = false).*\n/gm, ""),
+  314:     );
+  315: 
+  316:     const upgraded = installCodexIntegration(defaultConfig("browser-only"));
+  317:     expect(upgraded.version).toBe(6);
+  318:     expect(readFileSync(configPath, "utf8")).toContain(
+  319:       "remote_compaction_v2 = false # Managed by codex-chatgpt-web",
+  320:     );
+  321:     expect(readFileSync(configPath, "utf8")).toContain(
+  322:       "multi_agent = true # Managed by codex-chatgpt-web",
+  323:     );
+  324:     expect(readFileSync(configPath, "utf8")).toContain(
+  325:       "multi_agent_v2 = false # Managed by codex-chatgpt-web",
+  326:     );
+  327:   });
+  328: 
+  329:   test("upgrades an active v5 journal without losing its preserved feature baseline", () => {
+  330:     const { codexHome } = fixture();
+  331:     const configPath = join(codexHome, "config.toml");
+  332:     const original = 'model = "gpt-5.6-sol"\n\n[features]\nmulti_agent_v2 = true # user choice\ngoals = true\n';
+  333:     writeFileSync(configPath, original);
+  334:     installCodexIntegration(defaultConfig("full"));
+  335:     const legacy = JSON.parse(readFileSync(getCodexJournalPath(), "utf8"));
+  336:     delete legacy.previousMultiAgentV2;
+  337:     delete legacy.installed.multi_agent_v2;
+  338:     legacy.version = 5;
+  339:     writeFileSync(getCodexJournalPath(), `${JSON.stringify(legacy, null, 2)}\n`);
+  340:     writeFileSync(
+  341:       configPath,
+  342:       readFileSync(configPath, "utf8").replace(
+  343:         /^multi_agent_v2 = false.*$/m,
+  344:         "multi_agent_v2 = true # user choice",
+  345:       ),
+  346:     );
+  347: 
+  348:     const upgraded = installCodexIntegration(defaultConfig("full"));
+  349:     expect(upgraded.version).toBe(6);
+  350:     expect(readFileSync(configPath, "utf8")).toContain(
+  351:       "multi_agent_v2 = false # Managed by codex-chatgpt-web",
+  352:     );
+  353: 
+  354:     uninstallCodexIntegration();
+  355:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  356:   });
+  357: 
+  358:   test("fails closed when the native route changes while the bridge is disconnected", () => {
+  359:     const { codexHome } = fixture();
+  360:     const configPath = join(codexHome, "config.toml");
+  361:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  362:     installCodexIntegration(defaultConfig("browser-only"));
+  363:     deactivateCodexIntegration();
+  364:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\nopenai_base_url = "https://newer.example/v1"\n');
+  365: 
+  366:     expect(() => activateCodexIntegration()).toThrow("changed while the bridge was disconnected");
+  367:     expect(readFileSync(configPath, "utf8")).toContain("https://newer.example/v1");
+  368:   });
+  369: 
+  370:   test("uninstalls cleanly while the bridge is disconnected", () => {
+  371:     const { codexHome } = fixture();
+  372:     const configPath = join(codexHome, "config.toml");
+  373:     const original = 'model = "gpt-5.6-sol"\n';
+  374:     writeFileSync(configPath, original);
+  375:     installCodexIntegration(defaultConfig("browser-only"));
+  376:     deactivateCodexIntegration();
+  377: 
+  378:     expect(uninstallCodexIntegration()).toEqual({ changed: true });
+  379:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  380:     expect(inspectCodexIntegration()).toMatchObject({ installed: false, active: false });
+  381:   });
+  382: 
+  383:   test("does not apply one application home's journal to a different Codex home", () => {
+  384:     const { root, codexHome } = fixture();
+  385:     const firstConfig = join(codexHome, "config.toml");
+  386:     writeFileSync(firstConfig, 'model = "gpt-5.6-sol"\n');
+  387:     installCodexIntegration(defaultConfig("browser-only"));
+  388: 
+  389:     const secondCodexHome = join(root, "other-codex");
+  390:     mkdirSync(secondCodexHome, { recursive: true });
+  391:     const secondConfig = join(secondCodexHome, "config.toml");
+  392:     writeFileSync(secondConfig, 'model = "gpt-5.5"\n');
+  393:     process.env.CODEX_HOME = secondCodexHome;
+  394: 
+  395:     expect(() => preflightCodexIntegration(defaultConfig("browser-only")))
+  396:       .toThrow("journal belongs");
+  397:     expect(readFileSync(secondConfig, "utf8")).toBe('model = "gpt-5.5"\n');
+  398:   });
+  399: 
+  400:   test("preserves Windows line endings and a missing final newline", () => {
+  401:     const { codexHome } = fixture();
+  402:     const configPath = join(codexHome, "config.toml");
+  403:     const windowsOriginal = 'model = "gpt-5.6-sol"\r\n\r\n[features]\r\ngoals = true';
+  404:     writeFileSync(configPath, windowsOriginal);
+  405: 
+  406:     installCodexIntegration(defaultConfig("browser-only"));
+  407:     const installed = readFileSync(configPath, "utf8");
+  408:     expect(installed).toContain('\r\nopenai_base_url = "http://127.0.0.1:17841/v1"\r\n');
+  409:     expect(installed.endsWith("\n")).toBe(false);
+  410: 
+  411:     uninstallCodexIntegration();
+  412:     expect(readFileSync(configPath, "utf8")).toBe(windowsOriginal);
+  413:   });
+  414: 
+  415:   test("migrates the removed static-catalog integration without reviving a missing foreign catalog", () => {
+  416:     const { codexHome, appHome } = fixture();
+  417:     const configPath = join(codexHome, "config.toml");
+  418:     const managedCatalog = join(appHome, "codex", "model-catalog.json");
+  419:     mkdirSync(join(appHome, "codex"), { recursive: true });
+  420:     writeFileSync(managedCatalog, "managed\n");
+  421:     const providerBlock = '# BEGIN codex-chatgpt-web provider\n[model_providers.codex-chatgpt-web]\nname = "Codex + ChatGPT Web"\n# END codex-chatgpt-web provider';
+  422:     writeFileSync(configPath, `model = "gpt-5.6-sol"\nmodel_catalog_json = ${JSON.stringify(managedCatalog)}\nmodel_provider = "codex-chatgpt-web"\n\n${providerBlock}\n`);
+  423:     writeFileSync(getCodexJournalPath(), JSON.stringify({
+  424:       version: 2,
+  425:       configPath,
+  426:       catalogPath: managedCatalog,
+  427:       catalogSha256: new Bun.CryptoHasher("sha256").update("managed\n").digest("hex"),
+  428:       providerBlock,
+  429:       installed: { model_provider: "codex-chatgpt-web", model_catalog_json: managedCatalog },
+  430:       previous: {
+  431:         model_provider: { present: false },
+  432:         model_catalog_json: { present: true, rawLine: 'model_catalog_json = "/missing/opencodex-catalog.json"', value: "/missing/opencodex-catalog.json" },
+  433:       },
+  434:     }));
+  435: 
+  436:     installCodexIntegration(defaultConfig("browser-only"));
+  437:     const installed = readFileSync(configPath, "utf8");
+  438:     expect(installed).not.toContain("opencodex-catalog");
+  439:     expect(installed).not.toContain("model_catalog_json");
+  440:     expect(installed).not.toContain("model_provider");
+  441:     expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+  442:   });
+  443: 
+  444:   test("fails closed when the installed route changed after setup", () => {
+  445:     const { codexHome } = fixture();
+  446:     const configPath = join(codexHome, "config.toml");
+  447:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  448:     installCodexIntegration(defaultConfig("browser-only"));
+  449:     const changed = readFileSync(configPath, "utf8").replace("17841", "17842");
+  450:     writeFileSync(configPath, changed);
+  451:     expect(() => uninstallCodexIntegration()).toThrow("changed after setup");
+  452:     expect(readFileSync(configPath, "utf8")).toBe(changed);
+  453:   });
+  454: 
+  455:   test("fails closed when the managed compaction feature changes after setup", () => {
+  456:     const { codexHome } = fixture();
+  457:     const configPath = join(codexHome, "config.toml");
+  458:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  459:     installCodexIntegration(defaultConfig("browser-only"));
+  460:     const changed = readFileSync(configPath, "utf8")
+  461:       .replace(/^remote_compaction_v2 = false.*$/m, "remote_compaction_v2 = true");
+  462:     writeFileSync(configPath, changed);
+  463: 
+  464:     expect(() => uninstallCodexIntegration()).toThrow("remote_compaction_v2 changed after setup");
+  465:     expect(readFileSync(configPath, "utf8")).toBe(changed);
+  466:   });
+  467: 
+  468:   test("fails closed when the managed multi-agent feature changes after setup", () => {
+  469:     const { codexHome } = fixture();
+  470:     const configPath = join(codexHome, "config.toml");
+  471:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  472:     installCodexIntegration(defaultConfig("full"));
+  473:     const changed = readFileSync(configPath, "utf8")
+  474:       .replace(/^multi_agent = true.*$/m, "multi_agent = false");
+  475:     writeFileSync(configPath, changed);
+  476: 
+  477:     expect(() => uninstallCodexIntegration()).toThrow("multi_agent changed after setup");
+  478:     expect(readFileSync(configPath, "utf8")).toBe(changed);
+  479:   });
+  480: 
+  481:   test("fails closed when the managed V1 subagent transport changes after setup", () => {
+  482:     const { codexHome } = fixture();
+  483:     const configPath = join(codexHome, "config.toml");
+  484:     writeFileSync(configPath, 'model = "gpt-5.6-sol"\n');
+  485:     installCodexIntegration(defaultConfig("full"));
+  486:     const changed = readFileSync(configPath, "utf8")
+  487:       .replace(/^multi_agent_v2 = false.*$/m, "multi_agent_v2 = true");
+  488:     writeFileSync(configPath, changed);
+  489: 
+  490:     expect(() => uninstallCodexIntegration()).toThrow("multi_agent_v2 changed after setup");
+  491:     expect(readFileSync(configPath, "utf8")).toBe(changed);
+  492:   });
+  493: 
+  494:   test("keeps every user line byte-for-byte when line endings are mixed", () => {
+  495:     const { codexHome } = fixture();
+  496:     const configPath = join(codexHome, "config.toml");
+  497:     const original = 'model = "gpt-5.6-sol"\r\napproval_policy = "never"\n\r\n[features]\ngoals = true\r\n';
+  498:     writeFileSync(configPath, original);
+  499: 
+  500:     installCodexIntegration(defaultConfig("browser-only"));
+  501:     const installed = readFileSync(configPath, "utf8");
+  502:     for (const line of [
+  503:       'model = "gpt-5.6-sol"\r\n',
+  504:       'approval_policy = "never"\n',
+  505:       "[features]\n",
+  506:       "goals = true\r\n",
+  507:     ]) {
+  508:       expect(installed).toContain(line);
+  509:     }
+  510:     expect(installed).toContain('openai_base_url = "http://127.0.0.1:17841/v1"');
+  511: 
+  512:     uninstallCodexIntegration();
+  513:     expect(readFileSync(configPath, "utf8")).toBe(original);
+  514:   });
+  515: });
+
+============================================================
+FILE: src\setup.ts
+============================================================
+    1: import { existsSync } from "node:fs";
+    2: import { randomBytes } from "node:crypto";
+    3: import { createServer } from "node:net";
+    4: import { join } from "node:path";
+    5: import type { AppConfig, RuntimeMode } from "./config";
+    6: import {
+    7:   currentRuntimeCommand,
+    8:   defaultBrokerEndpoint,
+    9:   defaultConfig,
+   10:   getConfigPath,
+   11:   loadConfigForSetup,
+   12:   saveConfig,
+   13: } from "./config";
+   14: import {
+   15:   browserLoginStateExists,
+   16:   inspectBrowserLoginCapabilities,
+   17:   loginToChatGpt,
+   18:   storedBrowserLoginCapabilities,
+   19: } from "./browser-login";
+   20: import { installCodexIntegration, preflightCodexIntegration } from "./codex-integration";
+   21: import { inspectLauncherBrowserHost } from "./launcher-browser-host";
+   22: import {
+   23:   assertServiceIdle,
+   24:   getServiceStatus,
+   25:   installService,
+   26:   removeLegacyRuntimeArtifacts,
+   27:   restartService,
+   28:   uninstallService,
+   29: } from "./service";
+   30: import { connectTunnel, createTunnelConfig, installRuntimeKey, installRuntimeKeyBytes, installTunnelClient, managedRuntimeKeyPath, stopTunnel, waitForTunnelReady } from "./tunnel";
+   31: import { getTunnelServiceStatus, installTunnelService, restartTunnelService, stopTunnelService, tunnelServiceDefinitionMatches, uninstallTunnelService } from "./tunnel-service";
+   32: import { VERSION } from "./version";
+   33: 
+   34: export interface SetupOptions {
+   35:   mode: RuntimeMode;
+   36:   port?: number;
+   37:   chromeExecutablePath?: string;
+   38:   browserHostDescriptorPath?: string;
+   39:   appName?: string;
+   40:   forceLogin?: boolean;
+   41:   autoApproveToolCalls?: boolean;
+   42:   replaceCodexRoute?: boolean;
+   43:   restartService?: boolean;
+   44:   acknowledgedUnofficial?: boolean;
+   45:   tunnelId?: string;
+   46:   runtimeKeyFile?: string;
+   47:   runtimeKeyValue?: string;
+   48: }
+   49: 
+   50: export interface SetupResult {
+   51:   mode: RuntimeMode;
+   52:   configPath: string;
+   53:   loginCreated: boolean;
+   54:   serviceLoaded: boolean;
+   55:   tunnelReady: boolean | null;
+   56:   codexRestartRequired: true;
+   57:   connectorSetupRequired: boolean;
+   58: }
+   59: 
+   60: export interface ExistingFullSetupCredentials {
+   61:   tunnelId: boolean;
+   62:   runtimeKey: boolean;
+   63: }
+   64: 
+   65: export function launcherCapabilityProbeRequired(existing: AppConfig | undefined): boolean {
+   66:   return !(existing?.browserHost === "launcher" && typeof existing.proAvailable === "boolean");
+   67: }
+   68: 
+   69: export function existingFullSetupCredentials(existing: AppConfig | undefined): ExistingFullSetupCredentials {
+   70:   const tunnel = existing?.mode === "full" ? existing.tunnel : undefined;
+   71:   return {
+   72:     tunnelId: Boolean(tunnel?.tunnelId),
+   73:     runtimeKey: Boolean(tunnel?.runtimeKeyFile && existsSync(tunnel.runtimeKeyFile)),
+   74:   };
+   75: }
+   76: 
+   77: function loadExistingConfig(): AppConfig | undefined {
+   78:   if (!existsSync(getConfigPath())) return undefined;
+   79:   return loadConfigForSetup();
+   80: }
+   81: 
+   82: function meaningfulRuntimeChange(before: AppConfig, after: AppConfig): boolean {
+   83:   return JSON.stringify({
+   84:     mode: before.mode,
+   85:     releaseVersion: before.releaseVersion,
+   86:     host: before.host,
+   87:     port: before.port,
+   88:     contextWindow: before.contextWindow,
+   89:     appName: before.appName,
+   90:     browserHost: before.browserHost,
+   91:     browserHostDescriptorPath: before.browserHostDescriptorPath,
+   92:     chromeExecutablePath: before.chromeExecutablePath,
+   93:     storageStatePath: before.storageStatePath,
+   94:     brokerSocketPath: before.brokerSocketPath,
+   95:     headed: before.headed,
+   96:     proAvailable: before.proAvailable,
+   97:     autoApproveToolCalls: before.autoApproveToolCalls,
+   98:     controlToken: before.controlToken,
+   99:     runtimeCommand: before.runtimeCommand,
+  100:     tunnel: before.tunnel,
+  101:   }) !== JSON.stringify({
+  102:     mode: after.mode,
+  103:     releaseVersion: after.releaseVersion,
+  104:     host: after.host,
+  105:     port: after.port,
+  106:     contextWindow: after.contextWindow,
+  107:     appName: after.appName,
+  108:     browserHost: after.browserHost,
+  109:     browserHostDescriptorPath: after.browserHostDescriptorPath,
+  110:     chromeExecutablePath: after.chromeExecutablePath,
+  111:     storageStatePath: after.storageStatePath,
+  112:     brokerSocketPath: after.brokerSocketPath,
+  113:     headed: after.headed,
+  114:     proAvailable: after.proAvailable,
+  115:     autoApproveToolCalls: after.autoApproveToolCalls,
+  116:     controlToken: after.controlToken,
+  117:     runtimeCommand: after.runtimeCommand,
+  118:     tunnel: after.tunnel,
+  119:   });
+  120: }
+  121: 
+  122: export function tunnelWorkerRuntimeChanged(before: AppConfig | undefined, after: AppConfig): boolean {
+  123:   if (!before || before.mode !== "full" || after.mode !== "full") return false;
+  124:   return before.releaseVersion !== after.releaseVersion
+  125:     || JSON.stringify(before.runtimeCommand) !== JSON.stringify(after.runtimeCommand)
+  126:     || before.brokerSocketPath !== after.brokerSocketPath;
+  127: }
+  128: 
+  129: async function assertPortAvailable(host: string, port: number): Promise<void> {
+  130:   await new Promise<void>((resolveAvailable, rejectAvailable) => {
+  131:     const server = createServer();
+  132:     server.unref();
+  133:     server.once("error", error => rejectAvailable(new Error(`Cannot bind ${host}:${port}: ${error.message}`)));
+  134:     server.listen(port, host, () => server.close(error => error ? rejectAvailable(error) : resolveAvailable()));
+  135:   });
+  136: }
+  137: 
+  138: export function setupProxyIsReady(
+  139:   health: Record<string, unknown>,
+  140:   config: Pick<AppConfig, "mode" | "releaseVersion">,
+  141: ): boolean {
+  142:   return health.service === "codex-chatgpt-web"
+  143:     && health.status === "ok"
+  144:     && health.mode === config.mode
+  145:     && health.version === config.releaseVersion
+  146:     && health.accepting_turns === true;
+  147: }
+  148: 
+  149: async function waitForProxy(config: AppConfig, timeoutMs = 10_000): Promise<void> {
+  150:   const deadline = Date.now() + timeoutMs;
+  151:   let lastError = "not reachable";
+  152:   while (Date.now() < deadline) {
+  153:     const controller = new AbortController();
+  154:     const requestTimeout = setTimeout(() => controller.abort(), 2_000);
+  155:     try {
+  156:       const response = await fetch(`http://${config.host}:${config.port}/healthz`, {
+  157:         signal: controller.signal,
+  158:       });
+  159:       if (response.ok) {
+  160:         const body = await response.json() as Record<string, unknown>;
+  161:         if (setupProxyIsReady(body, config)) return;
+  162:         lastError = `unexpected health payload: ${JSON.stringify(body)}`;
+  163:       } else {
+  164:         lastError = `HTTP ${response.status}`;
+  165:       }
+  166:     } catch (error) {
+  167:       lastError = error instanceof Error ? error.message : String(error);
+  168:     } finally {
+  169:       clearTimeout(requestTimeout);
+  170:     }
+  171:     await new Promise(resolveWait => setTimeout(resolveWait, 250));
+  172:   }
+  173:   throw new Error(`Responses proxy did not become ready: ${lastError}`);
+  174: }
+  175: 
+  176: function baseConfig(existing: AppConfig | undefined, options: SetupOptions): AppConfig {
+  177:   const config = existing ? structuredClone(existing) : defaultConfig(options.mode);
+  178:   config.mode = options.mode;
+  179:   config.releaseVersion = VERSION;
+  180:   config.runtimeCommand = currentRuntimeCommand();
+  181:   if (options.port !== undefined) {
+  182:     if (!Number.isInteger(options.port) || options.port < 1 || options.port > 65_535) throw new Error("--port must be an integer from 1 to 65535");
+  183:     config.port = options.port;
+  184:   }
+  185:   if (options.chromeExecutablePath) config.chromeExecutablePath = options.chromeExecutablePath;
+  186:   if (options.browserHostDescriptorPath) {
+  187:     config.browserHost = "launcher";
+  188:     config.browserHostDescriptorPath = options.browserHostDescriptorPath;
+  189:     config.brokerSocketPath = defaultBrokerEndpoint();
+  190:   } else if (options.chromeExecutablePath) {
+  191:     config.browserHost = "managed-chrome";
+  192:     delete config.browserHostDescriptorPath;
+  193:   }
+  194:   if (options.appName) config.appName = options.appName;
+  195:   if (options.autoApproveToolCalls !== undefined) config.autoApproveToolCalls = options.autoApproveToolCalls;
+  196:   if (options.acknowledgedUnofficial) config.acknowledgedUnofficialAt = new Date().toISOString();
+  197:   if (!config.acknowledgedUnofficialAt) {
+  198:     throw new Error("Setup requires explicit acknowledgement that this is unofficial browser automation. Pass --acknowledge-unofficial.");
+  199:   }
+  200:   return config;
+  201: }
+  202: 
+  203: async function configureTunnel(config: AppConfig, existing: AppConfig | undefined, options: SetupOptions): Promise<void> {
+  204:   if (config.mode === "browser-only") {
+  205:     delete config.tunnel;
+  206:     return;
+  207:   }
+  208:   const existingTunnel = existing?.mode === "full" ? existing.tunnel : undefined;
+  209:   const tunnelId = options.tunnelId ?? existingTunnel?.tunnelId;
+  210:   if (!tunnelId) {
+  211:     throw new Error("Full mode requires --tunnel-id. Create it at https://platform.openai.com/settings/organization/tunnels");
+  212:   }
+  213:   let runtimeKeyFile = existingTunnel?.runtimeKeyFile;
+  214:   if (!runtimeKeyFile && existsSync(managedRuntimeKeyPath())) runtimeKeyFile = managedRuntimeKeyPath();
+  215:   if (options.runtimeKeyFile) runtimeKeyFile = installRuntimeKey(options.runtimeKeyFile);
+  216:   if (options.runtimeKeyValue) runtimeKeyFile = installRuntimeKeyBytes(options.runtimeKeyValue);
+  217:   if (!runtimeKeyFile || !existsSync(runtimeKeyFile)) {
+  218:     throw new Error("Full mode requires a runtime key. Import it interactively or pass --runtime-key-file; create it at https://platform.openai.com/settings/organization/api-keys");
+  219:   }
+  220:   const installedBinary = await installTunnelClient();
+  221:   config.tunnel = createTunnelConfig({
+  222:     binaryPath: installedBinary,
+  223:     tunnelId,
+  224:     runtimeKeyFile,
+  225:     profileName: existingTunnel?.profileName,
+  226:     alias: existingTunnel?.alias,
+  227:   });
+  228: }
+  229: 
+  230: async function bootstrapTunnelProfile(config: AppConfig): Promise<void> {
+  231:   let bootstrapError: unknown;
+  232:   try {
+  233:     // `runtimes connect` writes the native profile and returns success only after its managed
+  234:     // runtime is running, healthy, and ready. Setup stops that validation runtime transactionally;
+  235:     // the launcher supervisor reconnects the same alias after the new configuration is committed.
+  236:     connectTunnel(config);
+  237:   } catch (error) {
+  238:     bootstrapError = error;
+  239:   }
+  240:   try {
+  241:     stopTunnel(config);
+  242:   } catch (stopError) {
+  243:     if (bootstrapError) {
+  244:       const primary = bootstrapError instanceof Error ? bootstrapError.message : String(bootstrapError);
+  245:       const cleanup = stopError instanceof Error ? stopError.message : String(stopError);
+  246:       throw new Error(`${primary}; temporary tunnel cleanup also failed: ${cleanup}`);
+  247:     }
+  248:     throw stopError;
+  249:   }
+  250:   if (bootstrapError) throw bootstrapError;
+  251: }
+  252: 
+  253: export async function setup(options: SetupOptions): Promise<SetupResult> {
+  254:   const existing = loadExistingConfig();
+  255:   const config = baseConfig(existing, options);
+  256:   const launcherOwned = config.browserHost === "launcher";
+  257:   if (!launcherOwned && process.platform !== "darwin") {
+  258:     throw new Error(
+  259:       "Terminal-only managed Chrome setup currently requires macOS. "
+  260:       + "Use the Codex Web GPT launcher on Windows or Linux.",
+  261:     );
+  262:   }
+  263:   preflightCodexIntegration(config, {
+  264:     replaceExistingRoute: options.replaceCodexRoute,
+  265:   });
+  266:   const refreshTunnelWorker = tunnelWorkerRuntimeChanged(existing, config);
+  267:   if (existing && options.restartService) config.controlToken = randomBytes(32).toString("base64url");
+  268:   const beforeService = getServiceStatus();
+  269:   if (launcherOwned && (beforeService.installed || beforeService.loaded)) {
+  270:     if (!existing) {
+  271:       throw new Error("A legacy background service exists without a verifiable configuration; refusing automatic migration");
+  272:     }
+  273:     if (!options.restartService) {
+  274:       throw new Error(
+  275:         "Launcher ownership migration must stop the legacy background service. "
+  276:         + "Retry from the launcher after the active Codex task finishes.",
+  277:       );
+  278:     }
+  279:   }
+  280:   if (beforeService.loaded && !existing) {
+  281:     throw new Error("A codex-chatgpt-web service is loaded but its configuration is missing; refusing to replace an unverifiable process");
+  282:   }
+  283: 
+  284:   let loginCreated = false;
+  285:   let proAvailable: boolean | undefined;
+  286:   if (config.browserHost === "launcher") {
+  287:     if (options.forceLogin) throw new Error("Launcher browser login is owned by the launcher UI; --login cannot replace it");
+  288:     const detectPro = launcherCapabilityProbeRequired(existing);
+  289:     const inspected = await inspectLauncherBrowserHost(config.browserHostDescriptorPath!, {
+  290:       detectPro,
+  291:     });
+  292:     proAvailable = detectPro ? inspected.proAvailable : existing!.proAvailable;
+  293:   } else {
+  294:     proAvailable = storedBrowserLoginCapabilities(config).proAvailable;
+  295:     const loginRequired = options.forceLogin || !browserLoginStateExists(config);
+  296:     const capabilityProbeRequired = !loginRequired && proAvailable === undefined;
+  297:     if (beforeService.loaded && (loginRequired || capabilityProbeRequired) && !options.restartService) {
+  298:       throw new Error(
+  299:         "Setup must verify the browser account before changing the running daemon. "
+  300:         + "Rerun from a normal terminal with --restart-service after the active task finishes.",
+  301:       );
+  302:     }
+  303:     if (beforeService.loaded && (loginRequired || capabilityProbeRequired) && existing) await assertServiceIdle(existing);
+  304:     if (loginRequired) {
+  305:       const login = await loginToChatGpt(config);
+  306:       proAvailable = login.proAvailable;
+  307:       loginCreated = true;
+  308:     } else if (capabilityProbeRequired) {
+  309:       proAvailable = (await inspectBrowserLoginCapabilities(config)).proAvailable;
+  310:     }
+  311:   }
+  312:   config.proAvailable = proAvailable === true;
+  313:   const explicitTunnelChange = Boolean(options.tunnelId || options.runtimeKeyFile || options.runtimeKeyValue);
+  314:   const preliminaryChange = Boolean(existing && (meaningfulRuntimeChange(existing, config) || explicitTunnelChange || options.forceLogin));
+  315:   if (beforeService.loaded && preliminaryChange && !options.restartService) {
+  316:     throw new Error(
+  317:       "The daemon is currently serving a Codex task and setup would change its runtime. "
+  318:       + "Rerun from a normal terminal with --restart-service after the active task finishes.",
+  319:     );
+  320:   }
+  321:   if (beforeService.loaded && preliminaryChange && existing) await assertServiceIdle(existing);
+  322:   await configureTunnel(config, existing, options);
+  323: 
+  324:   const changedWhileLoaded = Boolean(existing && beforeService.loaded && meaningfulRuntimeChange(existing, config));
+  325:   if (changedWhileLoaded && !options.restartService) {
+  326:     throw new Error(
+  327:       "The daemon is currently serving a Codex task and setup would change its runtime. "
+  328:       + "Rerun from a normal terminal with --restart-service after the active task finishes.",
+  329:     );
+  330:   }
+  331:   if (changedWhileLoaded && !preliminaryChange && existing) await assertServiceIdle(existing);
+  332:   if (!beforeService.loaded) await assertPortAvailable(config.host, config.port);
+  333: 
+  334:   if (!launcherOwned) {
+  335:     saveConfig(config);
+  336:     installService(config);
+  337:     if (changedWhileLoaded && options.restartService && existing) await restartService(existing);
+  338:     await waitForProxy(config);
+  339:   }
+  340: 
+  341:   let tunnelReady: boolean | null = null;
+  342:   if (config.mode === "browser-only" && existing?.mode === "full") {
+  343:     const previousTunnelService = getTunnelServiceStatus();
+  344:     if (previousTunnelService.installed || previousTunnelService.loaded) await uninstallTunnelService();
+  345:     stopTunnel(existing);
+  346:   }
+  347:   if (config.mode === "full") {
+  348:     const profilePath = join(config.tunnel!.profileDir, `${config.tunnel!.profileName}.yaml`);
+  349:     const tunnelService = getTunnelServiceStatus();
+  350:     const needsProfile = !existsSync(profilePath);
+  351:     if (launcherOwned) {
+  352:       if (tunnelService.installed || tunnelService.loaded) await uninstallTunnelService();
+  353:       if (needsProfile || refreshTunnelWorker || explicitTunnelChange) {
+  354:         await bootstrapTunnelProfile(config);
+  355:       }
+  356:     } else {
+  357:       const needsOwnershipMigration = !tunnelService.installed || !tunnelService.loaded || !tunnelServiceDefinitionMatches(config);
+  358:       if (needsOwnershipMigration || needsProfile) {
+  359:         await assertServiceIdle(config);
+  360:         if (tunnelService.loaded) await stopTunnelService();
+  361:         await bootstrapTunnelProfile(config);
+  362:         installTunnelService(config);
+  363:       } else if (refreshTunnelWorker) {
+  364:         await assertServiceIdle(config);
+  365:         await restartTunnelService();
+  366:       }
+  367:       const status = await waitForTunnelReady(config);
+  368:       if (!status.ok) throw new Error(`Tunnel runtime did not become healthy and ready: ${status.detail}`);
+  369:       tunnelReady = true;
+  370:     }
+  371:   }
+  372:   if (launcherOwned && (beforeService.installed || beforeService.loaded)) {
+  373:     await uninstallService(existing!);
+  374:   }
+  375:   if (launcherOwned) saveConfig(config);
+  376:   // Keep the previous terminal runtime intact through the ownership handoff. A later launcher
+  377:   // setup removes it once the launcher-owned configuration is already the established baseline.
+  378:   const migratingTerminalRuntime = Boolean(
+  379:     launcherOwned && existing && existing.browserHost !== "launcher",
+  380:   );
+  381:   if (!migratingTerminalRuntime) removeLegacyRuntimeArtifacts(config);
+  382:   installCodexIntegration(config, {
+  383:     replaceExistingRoute: options.replaceCodexRoute,
+  384:   });
+  385: 
+  386:   return {
+  387:     mode: config.mode,
+  388:     configPath: getConfigPath(),
+  389:     loginCreated,
+  390:     serviceLoaded: launcherOwned ? false : getServiceStatus().loaded,
+  391:     tunnelReady,
+  392:     codexRestartRequired: true,
+  393:     connectorSetupRequired: config.mode === "full",
+  394:   };
+  395: }
