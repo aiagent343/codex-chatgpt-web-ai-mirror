@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "5bce293a8e240f3958d7091211ae42ae1f833037",
-    "generated_at":  "2026-08-09T08:51:14+08:00",
-    "tracked_file_count":  188,
-    "included_source_file_count":  185,
+    "source_commit":  "cf4b76e2b59f1077584a518a3b7035daee84a9a8",
+    "generated_at":  "2026-08-09T09:44:13+08:00",
+    "tracked_file_count":  189,
+    "included_source_file_count":  186,
     "excluded_source_file_count":  3,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "ad43c32c87a2bed6a0b75802719121a08514c23fab11766f42c89e9f09cce5bf"
+                      "sha256":  "4fcb058ed755248452bf19bd960e2d5661193e58696d25c34908ef5c2f8e8692"
                   },
                   {
                       "path":  "README.md",
@@ -141,6 +141,11 @@
                       "path":  "source/docs/architecture.md",
                       "bytes":  6863,
                       "sha256":  "adc5e2cf7f71b4be5850e96c889218b59120fc905f3f15a69bb502f2bae85222"
+                  },
+                  {
+                      "path":  "source/docs/DOM_PlainText_Source_Inspection.txt",
+                      "bytes":  151217,
+                      "sha256":  "33b29c8e8de58ccf8fe3660def8beac4b66ac1bf8ef40aebec3d43b05dbe24d0"
                   },
                   {
                       "path":  "source/docs/security-model.md",
