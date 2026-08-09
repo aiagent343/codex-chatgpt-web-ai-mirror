@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "9ebc862886ef6c278ea8a12eb86be28bf08a2dc7",
-    "generated_at":  "2026-08-09T11:32:16+08:00",
-    "tracked_file_count":  192,
-    "included_source_file_count":  187,
-    "excluded_source_file_count":  5,
+    "source_commit":  "5166416d9c4eaa24a682922d9a84f46dd635320b",
+    "generated_at":  "2026-08-09T11:51:15+08:00",
+    "tracked_file_count":  194,
+    "included_source_file_count":  188,
+    "excluded_source_file_count":  6,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "71081df90c6ec932b8ab2834b0253bc67a06244a7d33be602dd454c468bf9b09"
+                      "sha256":  "dfd26660fd08a2cad04514d4ce59c97e20823b85c11a4620f31b86a936dc53dd"
                   },
                   {
                       "path":  "README.md",
@@ -481,6 +481,11 @@
                       "path":  "source/scripts/clean.ts",
                       "bytes":  271,
                       "sha256":  "100066a30f25c5cf6904c3d3f1f2e0e3a81e4d40182d648533fa0170a93cb2f6"
+                  },
+                  {
+                      "path":  "source/scripts/collect-github-diagnostics.ps1",
+                      "bytes":  6001,
+                      "sha256":  "07bcc1b8fd2394597cbfa99d37b9b40234691dfdbffddf8be361b494073ebbfa"
                   },
                   {
                       "path":  "source/scripts/generate-third-party-notices.ts",
@@ -960,6 +965,10 @@
                      },
                      {
                          "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-113009.txt",
+                         "reason":  "blocked runtime/generated directory: diagnostics/"
+                     },
+                     {
+                         "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-115001.txt",
                          "reason":  "blocked runtime/generated directory: diagnostics/"
                      },
                      {
