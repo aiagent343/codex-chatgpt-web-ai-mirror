@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "6195a6891bea1bbd9884e2090c0135a58b8d68cf",
-    "generated_at":  "2026-08-09T11:00:15+08:00",
-    "tracked_file_count":  190,
+    "source_commit":  "9ebc862886ef6c278ea8a12eb86be28bf08a2dc7",
+    "generated_at":  "2026-08-09T11:32:16+08:00",
+    "tracked_file_count":  192,
     "included_source_file_count":  187,
-    "excluded_source_file_count":  3,
+    "excluded_source_file_count":  5,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "c49b307e3abaeec41b9aea77589010b6121594c10bcd3d2eb820511d629a6d14"
+                      "sha256":  "71081df90c6ec932b8ab2834b0253bc67a06244a7d33be602dd454c468bf9b09"
                   },
                   {
                       "path":  "README.md",
@@ -959,7 +959,15 @@
                          "reason":  "blocked sensitive/test filename: github_desktop_push_test.txt"
                      },
                      {
+                         "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-113009.txt",
+                         "reason":  "blocked runtime/generated directory: diagnostics/"
+                     },
+                     {
                          "path":  "diagnostics/latest/.gitkeep",
+                         "reason":  "blocked runtime/generated directory: diagnostics/"
+                     },
+                     {
+                         "path":  "diagnostics/latest/CODEX_WEB_GPT_ERROR_DIAGNOSTIC.txt",
                          "reason":  "blocked runtime/generated directory: diagnostics/"
                      },
                      {
