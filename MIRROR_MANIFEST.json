@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "3d8d549e2e9b21e05cea84c91c9e0f8ac525ff9c",
-    "generated_at":  "2026-08-09T12:04:14+08:00",
-    "tracked_file_count":  195,
+    "source_commit":  "956b78d2c79a214a7ff46ce3aacb59864e9a222e",
+    "generated_at":  "2026-08-09T12:16:13+08:00",
+    "tracked_file_count":  196,
     "included_source_file_count":  188,
-    "excluded_source_file_count":  7,
+    "excluded_source_file_count":  8,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "0153d9b3483cd5e01c4cfc9a641e8f243627892ac0c037deb492d811bd849154"
+                      "sha256":  "c0d929582638b423ca15e7eb4fb508d9aa148b1f0dc2910723c1e1f2d8aa5729"
                   },
                   {
                       "path":  "README.md",
@@ -484,8 +484,8 @@
                   },
                   {
                       "path":  "source/scripts/collect-github-diagnostics.ps1",
-                      "bytes":  6001,
-                      "sha256":  "07bcc1b8fd2394597cbfa99d37b9b40234691dfdbffddf8be361b494073ebbfa"
+                      "bytes":  7586,
+                      "sha256":  "2e369a18c92255614aa3b04a857d1a1ecfea4cda366a6de21c412ab3f1fd64aa"
                   },
                   {
                       "path":  "source/scripts/generate-third-party-notices.ts",
@@ -973,6 +973,10 @@
                      },
                      {
                          "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-120340.txt",
+                         "reason":  "blocked runtime/generated directory: diagnostics/"
+                     },
+                     {
+                         "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-121525.txt",
                          "reason":  "blocked runtime/generated directory: diagnostics/"
                      },
                      {

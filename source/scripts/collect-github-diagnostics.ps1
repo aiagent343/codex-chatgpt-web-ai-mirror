@@ -211,6 +211,74 @@ foreach ($file in ($sourceFiles | Select-Object -Unique)) {
     }
 }
 
+
+Add-Line ""
+Add-Line "===== BROWSER TURN FAILURE SNAPSHOTS ====="
+
+$browserTurnsRoot = Join-Path `
+    $env:USERPROFILE `
+    ".codex-chatgpt-web\diagnostics\browser-turns"
+
+Add-Line "ROOT: $browserTurnsRoot"
+
+if (Test-Path -LiteralPath $browserTurnsRoot) {
+
+    $failureFiles = @(
+        Get-ChildItem `
+            -LiteralPath $browserTurnsRoot `
+            -Filter "*turn-failed.json" `
+            -File `
+            -Recurse `
+            -ErrorAction SilentlyContinue |
+        Sort-Object LastWriteTime -Descending |
+        Select-Object -First 20
+    )
+
+    Add-Line "FAILURE SNAPSHOTS FOUND: $($failureFiles.Count)"
+
+    foreach ($failure in $failureFiles) {
+
+        Add-Line ""
+        Add-Line "------------------------------------------------------------"
+        Add-Line "FILE: $($failure.FullName)"
+        Add-Line "SIZE: $($failure.Length)"
+        Add-Line "MODIFIED: $($failure.LastWriteTime)"
+        Add-Line "------------------------------------------------------------"
+
+        try {
+
+            $raw = [System.IO.File]::ReadAllText(
+                $failure.FullName
+            )
+
+            # 防止意外的 NUL
+            $raw = $raw.Replace(
+                ([char]0).ToString(),
+                ""
+            )
+
+            # 基础敏感信息脱敏
+            $raw = Redact-Line $raw
+
+            Add-Line $raw
+
+        }
+        catch {
+
+            Add-Line (
+                "READ FAILURE: " +
+                $_.Exception.Message
+            )
+        }
+    }
+
+}
+else {
+
+    Add-Line "Browser-turn diagnostic directory NOT FOUND"
+
+}
+
 Add-Line ""
 Add-Line "===== END ====="
 
