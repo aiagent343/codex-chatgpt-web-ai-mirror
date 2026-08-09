@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "3949bb982b523fea43ee9033df179a818c336fbe",
-    "generated_at":  "2026-08-09T08:34:08+08:00",
-    "tracked_file_count":  187,
-    "included_source_file_count":  184,
+    "source_commit":  "5bce293a8e240f3958d7091211ae42ae1f833037",
+    "generated_at":  "2026-08-09T08:51:14+08:00",
+    "tracked_file_count":  188,
+    "included_source_file_count":  185,
     "excluded_source_file_count":  3,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "1be7e0aacd0bea4b21bf6f80f8067d38a97f0078a735755fdc8465662383b5db"
+                      "sha256":  "ad43c32c87a2bed6a0b75802719121a08514c23fab11766f42c89e9f09cce5bf"
                   },
                   {
                       "path":  "README.md",
@@ -81,6 +81,11 @@
                       "path":  "source/PROVIDER_V7_IMPLEMENTATION_TASK.md",
                       "bytes":  8671,
                       "sha256":  "8faf7166a517a0843e85c2800d04d22eab6c128c67dad2870bbf8731346c31e9"
+                  },
+                  {
+                      "path":  "source/PUBLIC_MIRROR_REAL_E2E.txt",
+                      "bytes":  127,
+                      "sha256":  "a72c8c7eaa769c64a8fb4538acd0861aac1d18befc799cff467f0d19b2651fae"
                   },
                   {
                       "path":  "source/README.md",
