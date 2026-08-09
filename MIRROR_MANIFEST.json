@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "5166416d9c4eaa24a682922d9a84f46dd635320b",
-    "generated_at":  "2026-08-09T11:51:15+08:00",
-    "tracked_file_count":  194,
+    "source_commit":  "3d8d549e2e9b21e05cea84c91c9e0f8ac525ff9c",
+    "generated_at":  "2026-08-09T12:04:14+08:00",
+    "tracked_file_count":  195,
     "included_source_file_count":  188,
-    "excluded_source_file_count":  6,
+    "excluded_source_file_count":  7,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "dfd26660fd08a2cad04514d4ce59c97e20823b85c11a4620f31b86a936dc53dd"
+                      "sha256":  "0153d9b3483cd5e01c4cfc9a641e8f243627892ac0c037deb492d811bd849154"
                   },
                   {
                       "path":  "README.md",
@@ -969,6 +969,10 @@
                      },
                      {
                          "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-115001.txt",
+                         "reason":  "blocked runtime/generated directory: diagnostics/"
+                     },
+                     {
+                         "path":  "diagnostics/history/CODEX_WEB_GPT_ERROR_DIAGNOSTIC_20260809-120340.txt",
                          "reason":  "blocked runtime/generated directory: diagnostics/"
                      },
                      {
