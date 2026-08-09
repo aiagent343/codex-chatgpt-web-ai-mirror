@@ -203,6 +203,11 @@ export interface BrowserTurn {
   modelId: string;
   reasoning?: string;
   capabilities: ChatGptWebCapabilities;
+  /**
+   * Machine-readable native Responses decisions must bypass Markdown/Turndown.
+   * Normal ChatGPT prose keeps the existing Markdown serialization path.
+   */
+  responseTextMode?: "markdown" | "visible-text";
   prepare: () => Promise<CompiledChatGptWebPrompt & { release: () => void }>;
   abortSignal?: AbortSignal;
   onHeartbeat?: () => void;
@@ -1616,7 +1621,10 @@ export class ChatGptBrowserWorker {
             capturedResponse = true;
             await diagnostics.capture(page, "response-visible");
           }
-          const textDelta = markdownBuffer.observe(snapshot.markdownSegments);
+          const serializeAsMarkdown = turn.responseTextMode !== "visible-text";
+          const textDelta = serializeAsMarkdown
+            ? markdownBuffer.observe(snapshot.markdownSegments)
+            : "";
           for (const trace of visibleTrace.observe(snapshot.traceBlocks, snapshot.completionActionVisible)) {
             if (trace.kind === "commentary") turn.onCommentary?.(trace.text, trace.continuation === true);
             else turn.onReasoningSummary?.(trace.text, trace.continuation === true);
@@ -1638,6 +1646,10 @@ export class ChatGptBrowserWorker {
           })) {
             if (snapshot.visibleText === "api_tool unavailable") {
               throw new Error("ChatGPT selected mode rejected the Codex Native MCP tool (api_tool unavailable)");
+            }
+            if (turn.responseTextMode === "visible-text") {
+              finalText = snapshot.visibleText;
+              break;
             }
             const final = markdownBuffer.finish();
             if (!final.markdown && snapshot.visibleText) {

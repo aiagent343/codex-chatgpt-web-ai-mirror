@@ -341,6 +341,7 @@ export function createChatGptWebAdapter(provider: CodexProviderConfig): Provider
               modelId: parsed.modelId,
               reasoning: parsed.options.reasoning,
               capabilities: turnCapabilities,
+              responseTextMode: "visible-text",
               prepare: async () => ({
                 ...compileChatGptWebPrompt(
                   parsed,

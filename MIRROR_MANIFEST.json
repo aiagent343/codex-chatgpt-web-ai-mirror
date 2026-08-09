@@ -1,16 +1,16 @@
 {
     "mirror_format":  "full-safe-v1",
     "source_branch":  "live",
-    "source_commit":  "cf4b76e2b59f1077584a518a3b7035daee84a9a8",
-    "generated_at":  "2026-08-09T09:44:13+08:00",
-    "tracked_file_count":  189,
-    "included_source_file_count":  186,
+    "source_commit":  "6195a6891bea1bbd9884e2090c0135a58b8d68cf",
+    "generated_at":  "2026-08-09T11:00:15+08:00",
+    "tracked_file_count":  190,
+    "included_source_file_count":  187,
     "excluded_source_file_count":  3,
     "files":  [
                   {
                       "path":  "PRIVATE_SOURCE_COMMIT.txt",
                       "bytes":  195,
-                      "sha256":  "4fcb058ed755248452bf19bd960e2d5661193e58696d25c34908ef5c2f8e8692"
+                      "sha256":  "c49b307e3abaeec41b9aea77589010b6121594c10bcd3d2eb820511d629a6d14"
                   },
                   {
                       "path":  "README.md",
@@ -679,8 +679,8 @@
                   },
                   {
                       "path":  "source/src/adapters/chatgpt-web/browser-worker.ts",
-                      "bytes":  76704,
-                      "sha256":  "841c8fd85b4e53a20bb949cfe56a41c55dc9d06509e721e768a516f38dafb9c7"
+                      "bytes":  77194,
+                      "sha256":  "b32db7edfd53c2234bebc8fae5f596d3347e2c2401e54be565162d965e995ccb"
                   },
                   {
                       "path":  "source/src/adapters/chatgpt-web/concurrency.ts",
@@ -694,8 +694,8 @@
                   },
                   {
                       "path":  "source/src/adapters/chatgpt-web/index.ts",
-                      "bytes":  26778,
-                      "sha256":  "cf6c1d9812132146b669b4d1e7560eb3fa9d04444399ed85f655177b01f6c502"
+                      "bytes":  26826,
+                      "sha256":  "8f0ac8e4de398243f5d355e1d92c378a2a8f6b32d8384c6ae633e75b199e299f"
                   },
                   {
                       "path":  "source/src/adapters/chatgpt-web/launcher-helper-client.ts",
@@ -886,6 +886,11 @@
                       "path":  "source/tests/native-tool-decision.test.ts",
                       "bytes":  4102,
                       "sha256":  "7322eaf5d9150e053c06a302319ee44c9d144bf8fdcc89b3f4b104b07509c76d"
+                  },
+                  {
+                      "path":  "source/tests/native-visible-text-contract.test.ts",
+                      "bytes":  1317,
+                      "sha256":  "e1b0a5226775fd48a77c656e2a7bee296272c2f61d5b0eafca01415b504662f0"
                   },
                   {
                       "path":  "source/tests/process-line-writer.test.ts",
